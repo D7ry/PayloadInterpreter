@@ -11,6 +11,8 @@ RE::BSEventNotifyControl animEventHandler::HookedProcessEvent(RE::BSAnimationGra
 	if (!a_event.holder) {
 		return fn ? (this->*fn)(a_event, src) : RE::BSEventNotifyControl::kContinue;
 	}
+
+	DEBUG("holder: {}", a_event.holder->As<RE::Actor>()->GetName());
 	if (a_event.payload.length() == 0) {
 		return fn ? (this->*fn)(a_event, src) : RE::BSEventNotifyControl::kContinue; //0 length payload gets returned.
 	}

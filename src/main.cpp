@@ -4,8 +4,13 @@ void MessageHandler(SKSE::MessagingInterface::Message* a_msg)
 	switch (a_msg->type) {
 	case SKSE::MessagingInterface::kDataLoaded:
 		//dataHandler::testInsertWeaponArt();
-		((animEventHandler*)((uintptr_t)RE::PlayerCharacter::GetSingleton() + 0x30))->HookSink();
-		DEBUG("anim event sinked!");
+		//((animEventHandler*)((uintptr_t)RE::PlayerCharacter::GetSingleton() + 0x30))->HookSink();
+		INFO("Hooksink anim events...");
+		REL::Relocation<uintptr_t> npcPtr{ REL::ID(261399) };
+		REL::Relocation<uintptr_t> pcPtr{ REL::ID(261918) };
+		animEventHandler::HookSink(pcPtr.address());
+		animEventHandler::HookSink(npcPtr.address());
+		DEBUG("Anim event hook sinked");
 		break;
 	}
 }

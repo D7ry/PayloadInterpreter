@@ -1,8 +1,9 @@
 #pragma once
 class animEventHandler {
 public:
+    
     template<class Ty>
-    Ty SafeWrite64Function(uintptr_t addr, Ty data) {
+    static Ty SafeWrite64Function(uintptr_t addr, Ty data) {
         DWORD oldProtect;
         void* _d[2];
         memcpy(_d, &data, sizeof(data));
@@ -18,26 +19,21 @@ public:
     }
 
     typedef RE::BSEventNotifyControl(animEventHandler::* FnProcessEvent)(RE::BSAnimationGraphEvent& a_event, RE::BSTEventSource<RE::BSAnimationGraphEvent>* dispatcher);
-
     RE::BSEventNotifyControl HookedProcessEvent(RE::BSAnimationGraphEvent& a_event, RE::BSTEventSource<RE::BSAnimationGraphEvent>* src);
 
-    void HookSink() {
+    /*void HookSink() {
         uint64_t vtable = *(uint64_t*)this;
         auto it = fnHash.find(vtable);
         if (it == fnHash.end()) {
             FnProcessEvent fn = SafeWrite64Function(vtable + 0x8, &animEventHandler::HookedProcessEvent);
             fnHash.insert(std::pair<uint64_t, FnProcessEvent>(vtable, fn));
         }
+    }*/
+    static void HookSink(uintptr_t ptr) {
+        FnProcessEvent fn = SafeWrite64Function(ptr + 0x8, &animEventHandler::HookedProcessEvent);
+        fnHash.insert(std::pair<uint64_t, FnProcessEvent>(ptr, fn));
     }
 
-    void UnHookSink() {
-        uint64_t vtable = *(uint64_t*)this;
-        auto it = fnHash.find(vtable);
-        if (it == fnHash.end())
-            return;
-        SafeWrite64Function(vtable + 0x8, it->second);
-        fnHash.erase(it);
-    }
 
     static animEventHandler* GetSingleton()
     {
