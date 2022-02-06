@@ -1,4 +1,5 @@
 #pragma once
+#include "spellCastHandler.h"
 using namespace std;
 /*bunch of regex to match payload input.*/
 namespace apf_regex
@@ -38,10 +39,10 @@ public:
 		}
 	};
 };
-//SGV(i/f/b|"string of graph variable"|true/false in 0/1) _set graph variable
-//MGV(i/f|"string of graph variable"|+/- float/int depending on the choice) _modify graph variable
-//SAV(av(in the form of int)|magnitude as float, -+) _set actor value
-//MAV(av(in the form of int)|magnitude as float, -+) _modify Actor value
+//SGV(i/f/b|"string of graph variable"|true/false in 0/1|keepChanges(true/false in 1/0)) _set graph variable
+//MGV(i/f|"string of graph variable"|+/- float/int depending on the choice|keepChanges(true/false in 1/0)) _modify graph variable
+//SAV(av(in the form of int)|magnitude as float, -+|keepChanges(true/false in 1/0)) _set actor value
+//MAV(av(in the form of int)|magnitude as float, -+|keepChanges(true/false in 1/0)) _modify Actor value
 //CAS(spell form|plugin name|effectiveness|magnitude|magickaCost|StaminaCost) _cast a spell
-//FOV(desiredFOV) (only works for player) _modify FOV
-//SHK(magnitude) (only works for player) _shake screen
+//FOV(desiredFOV) (only works for player) _modify FOV, changes will be automatically reverted
+//SHK(magnitude) (only works for player) _shake screen, changes will be automatically reverted

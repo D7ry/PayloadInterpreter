@@ -1,3 +1,14 @@
+#include "animEventHandler.h"
+void MessageHandler(SKSE::MessagingInterface::Message* a_msg)
+{
+	switch (a_msg->type) {
+	case SKSE::MessagingInterface::kDataLoaded:
+		//dataHandler::testInsertWeaponArt();
+		((animEventHandler*)((uintptr_t)RE::PlayerCharacter::GetSingleton() + 0x30))->HookSink();
+		DEBUG("anim event sinked!");
+		break;
+	}
+}
 #if ANNIVERSARY_EDITION
 
 extern "C" DLLEXPORT constinit auto SKSEPlugin_Version = []()
@@ -57,6 +68,9 @@ extern "C" DLLEXPORT bool SKSEAPI SKSEPlugin_Load(const SKSE::LoadInterface* a_s
 	INFO("{} v{} loaded", Version::PROJECT, Version::NAME);
 
 	SKSE::Init(a_skse);
-
+	auto messaging = SKSE::GetMessagingInterface();
+	if (!messaging->RegisterListener("SKSE", MessageHandler)) {
+		return false;
+	}
 	return true;
 }
