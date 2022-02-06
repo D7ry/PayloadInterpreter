@@ -1,4 +1,5 @@
 #pragma once
+#include <boost/regex.h>
 class animEventHandler {
 public:
     
