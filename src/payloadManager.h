@@ -2,27 +2,9 @@
 #include "payloadHandlers/actorValueHandler.h"
 #include "payloadHandlers/graphVariableHandler.h"
 #include "payloadHandlers/globalTimeHandler.h"
+#include "Utils.h"
 #pragma once
-inline std::vector<std::string> splitString(std::string s, const char delimiter)
-{
-	size_t start = 0;
-	size_t end = s.find_first_of(delimiter);
 
-	std::vector<std::string> output;
-
-	while (end <= std::string::npos)
-	{
-		output.emplace_back(s.substr(start, end - start));
-
-		if (end == std::string::npos)
-			break;
-
-		start = end + 1;
-		end = s.find_first_of(delimiter, start);
-	}
-
-	return output;
-}
 /*bunch of regex to match payload input.*/
 namespace PF_Regex
 {
@@ -45,28 +27,25 @@ namespace PF_Regex
 		static const boost::regex screenShake = boost::regex("\\#SHK.+");
 	};
 
-	/*convenience payloads begin with "$".*/
+	/*convenience payloads begin with "$". Convenience payloads are for more specific operations,
+	such as enabling i-frame.*/
 	namespace convenience
 	{
 		static const boost::regex head = boost::regex("\\$.+");
 
-		static const boost::regex enableIframe = boost::regex("\\$enableIframe");
+		static const boost::regex enableIframe = boost::regex("\\$enableIframe"); //i-frame will be disabled as soon as one exits the animation.
 		static const boost::regex disableIframe = boost::regex("\\$disableIframe");
 	}
 };
 
-/*In charge of pre-processing all payloads:
-1. pattern match payload commands and filter out unwanted commands.
-2. for matched commands, extract their parameters as a separate string and pass them into 
-	corresponding payload handlers for furutre parsing and processsing.*/
+/*class pre-processing all payloads and filter out unwanted ones.*/
 class payloadManager
 {
 public:
-	/*pre-process the payload and delegate task to corresponding handlers, who will further parse the payload and process.
-	@param a_actor the actor whose animation triggers the payload.
-	@param a_payload the payload body. 
-	!beware: once matched, all payload's split include the original argument.
-	so the parameter's index start from 1.*/
+	/*In charge of pre-processing all payloads:
+1. pattern match payload commands and filter out unwanted commands.
+2. for matched commands, extract their parameters as a vector and pass them into
+	corresponding payload handlers for furutre parsing and processsing.*/
 	static void preProcessPayload(RE::Actor* actor, std::string payload) {
 		DEBUG("processing {} for {}", payload, actor->GetName());
 		if (boost::regex_match(payload, PF_Regex::std::head)) {
@@ -82,7 +61,7 @@ public:
 
 	}
 private:
-	static void standardPayload(RE::Actor* actor, std::string payload) {
+	inline static void standardPayload(RE::Actor* actor, std::string payload) {
 		if (regex_match(payload, PF_Regex::std::setGraphVariable)) {
 			DEBUG("matched setGv");
 		}
@@ -113,7 +92,7 @@ private:
 		}
 	}
 
-	static void conveniencePayload(RE::Actor* actor, std::string payload) {
+	inline static void conveniencePayload(RE::Actor* actor, std::string payload) {
 		if (regex_match(payload, PF_Regex::convenience::enableIframe)) {
 			DEBUG("matched enableIframe");
 

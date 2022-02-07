@@ -1,6 +1,7 @@
 #pragma once
 namespace Utils
 {
+
     inline auto strViewSplit(std::string_view in, char sep) {
         std::vector<std::string_view> r;
         //r.reserve(std::count(in.begin(), in.end(), sep) + 1); // optional
