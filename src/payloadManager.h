@@ -1,19 +1,23 @@
 #pragma once
 #include "spellCastHandler.h"
+using namespace boost;
 using namespace std;
 /*bunch of regex to match payload input.*/
 namespace apf_regex
 {
-	static const regex setGraphVariable = regex("SGV\\*+");
-	static const regex modGraphVariable = regex("MGV\\*+");
+	static const boost::regex setGraphVariable = boost::regex("SGV\\*+");
+	static const boost::regex modGraphVariable = boost::regex("MGV\\*+");
 
-	static const regex setActorVariable = regex("SAV\\*+");
-	static const regex modActorVariable = regex("MAV\\*+");
+	static const boost::regex setActorVariable = boost::regex("SAV\\*+");
+	static const boost::regex modActorVariable = boost::regex("MAV\\*+");
 
-	static const regex castSpell = regex("CAS\\*+");
+	static const boost::regex castSpell = boost::regex("CAS\\*+");
 };
 
-
+/*In charge of pre-processing all payloads:
+1. pattern match payload commands and filter out unwanted commands.
+2. for matched commands, extract their parameters as a separate string and pass them into 
+	corresponding payload handlers for furutre parsing and processsing.*/
 class payloadManager
 {
 public:
@@ -39,7 +43,16 @@ public:
 			DEBUG("matched cast spell");
 		}
 	};
+
+	/*revert all changes caused by payload.*/
+	static void revertChanges(RE::Actor* actor) {
+
+	}
 };
+
+
+//SGS() _set game settings
+
 //SGV(i/f/b|"string of graph variable"|true/false in 0/1|keepChanges(true/false in 1/0)) _set graph variable
 //MGV(i/f|"string of graph variable"|+/- float/int depending on the choice|keepChanges(true/false in 1/0)) _modify graph variable
 //SAV(av(in the form of int)|magnitude as float, -+|keepChanges(true/false in 1/0)) _set actor value
