@@ -2,7 +2,7 @@
 #include "payloadHandler.h"
 class graphVariableHandler : public payloadHandler {
 public:
-	static void processPayloadParam(RE::Actor* actor, std::string param) {
+	static void process(RE::Actor* actor, std::vector<std::string> param) {
 
 	}
 };

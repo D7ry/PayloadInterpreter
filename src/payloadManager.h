@@ -1,17 +1,58 @@
+#include "payloadHandlers/spellCastHandler.h"
+#include "payloadHandlers/actorValueHandler.h"
+#include "payloadHandlers/graphVariableHandler.h"
+#include "payloadHandlers/globalTimeHandler.h"
 #pragma once
-#include "spellCastHandler.h"
-using namespace boost;
-using namespace std;
-/*bunch of regex to match payload input.*/
-namespace apf_regex
+inline std::vector<std::string> splitString(std::string s, const char delimiter)
 {
-	static const boost::regex setGraphVariable = boost::regex("SGV\\*+");
-	static const boost::regex modGraphVariable = boost::regex("MGV\\*+");
+	size_t start = 0;
+	size_t end = s.find_first_of(delimiter);
 
-	static const boost::regex setActorVariable = boost::regex("SAV\\*+");
-	static const boost::regex modActorVariable = boost::regex("MAV\\*+");
+	std::vector<std::string> output;
 
-	static const boost::regex castSpell = boost::regex("CAS\\*+");
+	while (end <= std::string::npos)
+	{
+		output.emplace_back(s.substr(start, end - start));
+
+		if (end == std::string::npos)
+			break;
+
+		start = end + 1;
+		end = s.find_first_of(delimiter, start);
+	}
+
+	return output;
+}
+/*bunch of regex to match payload input.*/
+namespace PF_Regex
+{
+	/*standard payload begin with "#".*/
+	namespace std
+	{
+		using namespace boost;
+		static const boost::regex head = boost::regex("\\#.+");
+
+		static const boost::regex setGraphVariable = boost::regex("\\#SGV.+");
+		static const boost::regex modGraphVariable = boost::regex("\\#MGV.+");
+
+		static const boost::regex setActorVariable = boost::regex("\\#SAV.+");
+		static const boost::regex modActorVariable = boost::regex("\\#MAV.+");
+
+		static const boost::regex castSpell = boost::regex("\\#CAS.+");
+
+		static const boost::regex setGlobalTimeMultiplier = boost::regex("\\#SGT\\|(\\d|\\.)+\\|");
+
+		static const boost::regex screenShake = boost::regex("\\#SHK.+");
+	};
+
+	/*convenience payloads begin with "$".*/
+	namespace convenience
+	{
+		static const boost::regex head = boost::regex("\\$.+");
+
+		static const boost::regex enableIframe = boost::regex("\\$enableIframe");
+		static const boost::regex disableIframe = boost::regex("\\$disableIframe");
+	}
 };
 
 /*In charge of pre-processing all payloads:
@@ -23,30 +64,63 @@ class payloadManager
 public:
 	/*pre-process the payload and delegate task to corresponding handlers, who will further parse the payload and process.
 	@param a_actor the actor whose animation triggers the payload.
-	@param a_payload the payload body. */
-	static void preProcessPayload(RE::Actor* actor, string payload) {
-		DEBUG("processing payload {} for {}", payload, actor->GetName());
-		if (regex_match(payload, apf_regex::setGraphVariable)) {
-			DEBUG("matched setGv");
+	@param a_payload the payload body. 
+	!beware: once matched, all payload's split include the original argument.
+	so the parameter's index start from 1.*/
+	static void preProcessPayload(RE::Actor* actor, std::string payload) {
+		DEBUG("processing {} for {}", payload, actor->GetName());
+		if (boost::regex_match(payload, PF_Regex::std::head)) {
+			standardPayload(actor, payload);
 		}
-		else if (regex_match(payload, apf_regex::modGraphVariable)) {
-			DEBUG("matched modGv");
-		}
-		else if (regex_match(payload, apf_regex::setActorVariable)) {
-			//e.g.:SAV(
-			DEBUG("matched setAv");
-		}
-		else if (regex_match(payload, apf_regex::modActorVariable)) {
-			DEBUG("matched modAv");
-		}
-		else if (regex_match(payload, apf_regex::castSpell)) {
-			DEBUG("matched cast spell");
+		else if (boost::regex_match(payload, PF_Regex::convenience::head)) {
+			conveniencePayload(actor, payload);
 		}
 	};
 
 	/*revert all changes caused by payload.*/
 	static void revertChanges(RE::Actor* actor) {
 
+	}
+private:
+	static void standardPayload(RE::Actor* actor, std::string payload) {
+		if (regex_match(payload, PF_Regex::std::setGraphVariable)) {
+			DEBUG("matched setGv");
+		}
+		else if (regex_match(payload, PF_Regex::std::modGraphVariable)) {
+			DEBUG("matched modGv");
+		}
+		else if (regex_match(payload, PF_Regex::std::setActorVariable)) {
+			DEBUG("matched setAv");
+		}
+		else if (regex_match(payload, PF_Regex::std::modActorVariable)) {
+			DEBUG("matched modAv");
+		}
+		else if (regex_match(payload, PF_Regex::std::castSpell)) {
+			DEBUG("matched cast spell");
+		}
+		else if (regex_match(payload, PF_Regex::std::setGlobalTimeMultiplier)) {
+			DEBUG("matched SGTM");
+			if (actor->IsPlayerRef()) {
+				//SGTM only triggers on player payload
+				globalTimeHandler::process(Utils::splitString(payload, '|'));
+			}
+		}
+		else if (regex_match(payload, PF_Regex::std::screenShake)) {
+			DEBUG("matched screen shake");
+			if (actor->IsPlayerRef()) {
+
+			}
+		}
+	}
+
+	static void conveniencePayload(RE::Actor* actor, std::string payload) {
+		if (regex_match(payload, PF_Regex::convenience::enableIframe)) {
+			DEBUG("matched enableIframe");
+
+		}
+		else if (regex_match(payload, PF_Regex::convenience::disableIframe)) {
+			DEBUG("matched disableIframe");
+		}
 	}
 };
 
