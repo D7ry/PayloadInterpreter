@@ -44,6 +44,10 @@ public:
 //MGV(i/f|"string of graph variable"|+/- float/int depending on the choice|keepChanges(true/false in 1/0)) _modify graph variable
 //SAV(av(in the form of int)|magnitude as float, -+|keepChanges(true/false in 1/0)) _set actor value
 //MAV(av(in the form of int)|magnitude as float, -+|keepChanges(true/false in 1/0)) _modify Actor value
+
+
+
 //CAS(spell form|plugin name|effectiveness|magnitude|magickaCost|StaminaCost) _cast a spell
 //FOV(desiredFOV) (only works for player) _modify FOV, changes will be automatically reverted
 //SHK(magnitude) (only works for player) _shake screen, changes will be automatically reverted
+//SGT(magnitude(must be positive)) _set global time multiplier. change will be automatically reverted
