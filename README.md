@@ -16,6 +16,6 @@ For actor values:<br/>
 
 #CAST|spell form|plugin name|effectiveness|magnitude|targetSelf(0/1)|magickaCost|StaminaCost| - cast a spell<br/>
 
-Convenience Methods(all begin with "$"):
-$iFrameOn - enable iFrame
-$iFrameOff - disbale iFrame 
+Convenience Methods(all begin with "$"):<br/>
+$iFrameOn - enable iFrame<br/>
+$iFrameOff - disbale iFrame<br/>
