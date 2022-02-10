@@ -1,30 +1,33 @@
-#include "payloadHandlers/spellCastHandler.h"
-#include "payloadHandlers/actorValueHandler.h"
-#include "payloadHandlers/graphVariableHandler.h"
-#include "payloadHandlers/globalTimeHandler.h"
+#include "payloadHandlers/payloadHandler.h"
 #include "Utils.h"
 #pragma once
 
 /*bunch of regex to match payload input.*/
 namespace PF_Regex
 {
-	/*standard payload begin with "#".*/
+	/*standard payload begin with "@".*/
 	namespace std
 	{
 		using namespace boost;
-		static const boost::regex head = boost::regex("\\#.+");
+		static const boost::regex head = boost::regex("\\@.+");
+		//TODO: make stricter regex
+		static const boost::regex setGraphVariableBool = boost::regex("\\@SGVB.+");
+		static const boost::regex setGraphVariableFloat = boost::regex("\\@SGVF.+");
+		static const boost::regex setGraphVariableInt = boost::regex("\\@SGVI.+");
 
-		static const boost::regex setGraphVariable = boost::regex("\\#SGV.+");
-		static const boost::regex modGraphVariable = boost::regex("\\#MGV.+");
+		
+		static const boost::regex modGraphVariableFloat = boost::regex("\\@MGVF.+");
+		static const boost::regex modGraphVariableInt = boost::regex("\\@MGVI.+");
 
-		static const boost::regex setActorVariable = boost::regex("\\#SAV.+");
-		static const boost::regex modActorVariable = boost::regex("\\#MAV.+");
+		static const boost::regex setActorVariable = boost::regex("\\@SAV.+");
+		static const boost::regex modActorVariable = boost::regex("\\@MAV.+");
 
-		static const boost::regex castSpell = boost::regex("\\#CAS.+");
+		static const boost::regex castSpell = boost::regex("\\@CAS.+");
 
-		static const boost::regex setGlobalTimeMultiplier = boost::regex("\\#SGT\\|(\\d|\\.)+\\|");
+		static const boost::regex setGlobalTimeMultiplier = boost::regex("\\@SGT\\|(\\d|\\.)+\\|");
 
-		static const boost::regex screenShake = boost::regex("\\#SHK.+");
+		static const boost::regex screenShake = boost::regex("\\@SHK.+");
+
 	};
 
 	/*convenience payloads begin with "$". Convenience payloads are for more specific operations,
@@ -62,11 +65,17 @@ public:
 	}
 private:
 	inline static void standardPayload(RE::Actor* actor, std::string payload) {
-		if (regex_match(payload, PF_Regex::std::setGraphVariable)) {
-			DEBUG("matched setGv");
+		if (regex_match(payload, PF_Regex::std::setGraphVariableBool)) {
+			DEBUG("matched SGVB");
+			graphVariableHandler::process(actor, Utils::splitString(payload, '|'), graphVariableHandler::GRAPHVARIABLETYPE::Bool);
 		}
-		else if (regex_match(payload, PF_Regex::std::modGraphVariable)) {
-			DEBUG("matched modGv");
+		else if (regex_match(payload, PF_Regex::std::setGraphVariableFloat)) {
+			DEBUG("matched SGVF");
+			graphVariableHandler::process(actor, Utils::splitString(payload, '|'), graphVariableHandler::GRAPHVARIABLETYPE::Float);
+		}
+		else if (regex_match(payload, PF_Regex::std::setGraphVariableInt)) {
+			DEBUG("matched SGVI");
+			graphVariableHandler::process(actor, Utils::splitString(payload, '|'), graphVariableHandler::GRAPHVARIABLETYPE::Int);
 		}
 		else if (regex_match(payload, PF_Regex::std::setActorVariable)) {
 			DEBUG("matched setAv");

@@ -1,4 +1,5 @@
 #pragma once
+#include "Utils.h"
 class payloadHandler {
 public:
 	/*process the parameters of a payload funcion.*/
@@ -13,4 +14,29 @@ private:
 			ERROR("Error: Incorrect number of parameters passed in");
 		}
 	}
+};
+
+class graphVariableHandler : public payloadHandler {
+public:
+	/*type of graph variable*/
+	enum GRAPHVARIABLETYPE {
+		Float = 0,
+		Int,
+		Bool
+	};
+	static void process(RE::Actor* actor, std::vector<std::string> param, GRAPHVARIABLETYPE graphVariableType);
+
+};
+
+class globalTimeHandler : public payloadHandler {
+public:
+	/*process the parameters of a payload funcion.*/
+	//SGTM takes 1 param.
+	static void process(std::vector<std::string> param);
+
+};
+
+class spellCastHandler : public payloadHandler {
+public:
+	static void process(RE::Actor* actor, std::vector<std::string> param);
 };
