@@ -1,128 +1,50 @@
 #include "payloadHandlers/payloadHandler.h"
 #include "Utils.h"
 #pragma once
-
-/*bunch of regex to match payload input.*/
-namespace PF_Regex
+constexpr uint32_t hash(const char* data, size_t const size) noexcept
 {
-	/*standard payload begin with "@".*/
-	namespace std
-	{
-		using namespace boost;
-		static const boost::regex head = boost::regex("\\@.+");
-		//TODO: make stricter regex
-		static const boost::regex setGraphVariableBool = boost::regex("\\@SGVB.+");
-		static const boost::regex setGraphVariableFloat = boost::regex("\\@SGVF.+");
-		static const boost::regex setGraphVariableInt = boost::regex("\\@SGVI.+");
+	uint32_t hash = 5381;
 
-		
-		static const boost::regex modGraphVariableFloat = boost::regex("\\@MGVF.+");
-		static const boost::regex modGraphVariableInt = boost::regex("\\@MGVI.+");
-
-		static const boost::regex setActorVariable = boost::regex("\\@SAV.+");
-		static const boost::regex modActorVariable = boost::regex("\\@MAV.+");
-
-		static const boost::regex castSpell = boost::regex("\\@CAS.+");
-
-		static const boost::regex setGlobalTimeMultiplier = boost::regex("\\@SGT\\|(\\d|\\.)+\\|");
-
-		static const boost::regex screenShake = boost::regex("\\@SHK.+");
-
-	};
-
-	/*convenience payloads begin with "$". Convenience payloads are for more specific operations,
-	such as enabling i-frame.*/
-	namespace convenience
-	{
-		static const boost::regex head = boost::regex("\\$.+");
-
-		static const boost::regex enableIframe = boost::regex("\\$enableIframe"); //i-frame will be disabled as soon as one exits the animation.
-		static const boost::regex disableIframe = boost::regex("\\$disableIframe");
+	for (const char* c = data; c < data + size; ++c) {
+		hash = ((hash << 5) + hash) + (unsigned char)*c;
 	}
-};
+
+	return hash;
+}
+
+constexpr uint32_t operator"" _h(const char* str, size_t size) noexcept
+{
+	return hash(str, size);
+}
+
 
 /*class pre-processing all payloads and filter out unwanted ones.*/
 class payloadManager
 {
 public:
-	/*In charge of pre-processing all payloads:
-1. pattern match payload commands and filter out unwanted commands.
-2. for matched commands, extract their parameters as a vector and pass them into
-	corresponding payload handlers for furutre parsing and processsing.*/
-	static void preProcessPayload(RE::Actor* actor, std::string payload) {
+	/*Tokenize the payload and dedicate it to corresponding handlers.*/
+	static void preProcessPayload(RE::Actor* actor, std::string_view payload) {
 		DEBUG("processing {} for {}", payload, actor->GetName());
-		if (boost::regex_match(payload, PF_Regex::std::head)) {
-			standardPayload(actor, payload);
+		std::vector<std::string_view> tokens = Utils::tokenize(payload, '|');
+		switch (hash(tokens[0].data(), tokens[0].size())) {
+		case "@SGVB"_h:
+			graphVariableHandler::process(actor, tokens, graphVariableHandler::GRAPHVARIABLETYPE::Bool); break;
+			break;
+		case "@SGVF"_h:
+			graphVariableHandler::process(actor, tokens, graphVariableHandler::GRAPHVARIABLETYPE::Float); break;
+		case "@SGVI"_h:
+			graphVariableHandler::process(actor, tokens, graphVariableHandler::GRAPHVARIABLETYPE::Int); break;
+		case "@CAST"_h:
+			spellCastHandler::process(actor, tokens); break;
 		}
-		else if (boost::regex_match(payload, PF_Regex::convenience::head)) {
-			conveniencePayload(actor, payload);
-		}
+		
+
+
 	};
 
 	/*revert all changes caused by payload.*/
 	static void revertChanges(RE::Actor* actor) {
 
 	}
-private:
-	inline static void standardPayload(RE::Actor* actor, std::string payload) {
-		if (regex_match(payload, PF_Regex::std::setGraphVariableBool)) {
-			DEBUG("matched SGVB");
-			graphVariableHandler::process(actor, Utils::splitString(payload, '|'), graphVariableHandler::GRAPHVARIABLETYPE::Bool);
-		}
-		else if (regex_match(payload, PF_Regex::std::setGraphVariableFloat)) {
-			DEBUG("matched SGVF");
-			graphVariableHandler::process(actor, Utils::splitString(payload, '|'), graphVariableHandler::GRAPHVARIABLETYPE::Float);
-		}
-		else if (regex_match(payload, PF_Regex::std::setGraphVariableInt)) {
-			DEBUG("matched SGVI");
-			graphVariableHandler::process(actor, Utils::splitString(payload, '|'), graphVariableHandler::GRAPHVARIABLETYPE::Int);
-		}
-		else if (regex_match(payload, PF_Regex::std::setActorVariable)) {
-			DEBUG("matched setAv");
-		}
-		else if (regex_match(payload, PF_Regex::std::modActorVariable)) {
-			DEBUG("matched modAv");
-		}
-		else if (regex_match(payload, PF_Regex::std::castSpell)) {
-			DEBUG("matched cast spell");
-		}
-		else if (regex_match(payload, PF_Regex::std::setGlobalTimeMultiplier)) {
-			DEBUG("matched SGTM");
-			if (actor->IsPlayerRef()) {
-				//SGTM only triggers on player payload
-				globalTimeHandler::process(Utils::splitString(payload, '|'));
-			}
-		}
-		else if (regex_match(payload, PF_Regex::std::screenShake)) {
-			DEBUG("matched screen shake");
-			if (actor->IsPlayerRef()) {
 
-			}
-		}
-	}
-
-	inline static void conveniencePayload(RE::Actor* actor, std::string payload) {
-		if (regex_match(payload, PF_Regex::convenience::enableIframe)) {
-			DEBUG("matched enableIframe");
-
-		}
-		else if (regex_match(payload, PF_Regex::convenience::disableIframe)) {
-			DEBUG("matched disableIframe");
-		}
-	}
 };
-
-
-//SGS() _set game settings
-
-//SGV(i/f/b|"string of graph variable"|true/false in 0/1|keepChanges(true/false in 1/0)) _set graph variable
-//MGV(i/f|"string of graph variable"|+/- float/int depending on the choice|keepChanges(true/false in 1/0)) _modify graph variable
-//SAV(av(in the form of int)|magnitude as float, -+|keepChanges(true/false in 1/0)) _set actor value
-//MAV(av(in the form of int)|magnitude as float, -+|keepChanges(true/false in 1/0)) _modify Actor value
-
-
-
-//CAS(spell form|plugin name|effectiveness|magnitude|magickaCost|StaminaCost) _cast a spell
-//FOV(desiredFOV) (only works for player) _modify FOV, changes will be automatically reverted
-//SHK(magnitude) (only works for player) _shake screen, changes will be automatically reverted
-//SGT(magnitude(must be positive)) _set global time multiplier. change will be automatically reverted

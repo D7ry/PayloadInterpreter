@@ -1,20 +1,30 @@
 #pragma once
 namespace Utils
 {
+    /*Tokenize a string_view into a vector of string_view.*/
+    inline std::vector<std::string_view> tokenize(const std::string_view str, const char delim = '|')
+    {
+        std::vector<std::string_view> result;
 
-    inline auto strViewSplit(std::string_view in, char sep) {
-        std::vector<std::string_view> r;
-        //r.reserve(std::count(in.begin(), in.end(), sep) + 1); // optional
-        for (auto p = in.begin();; ++p) {
-            auto q = p;
-            p = std::find(p, in.end(), sep);
-            r.emplace_back(q, p);
-            if (p == in.end())
-                return r;
+        int indexCommaToLeftOfColumn = 0;
+        int indexCommaToRightOfColumn = -1;
+
+        for (int i = 0; i < static_cast<int>(str.size()); i++)
+        {
+            if (str[i] == delim)
+            {
+                indexCommaToLeftOfColumn = indexCommaToRightOfColumn;
+                indexCommaToRightOfColumn = i;
+                int index = indexCommaToLeftOfColumn + 1;
+                int length = indexCommaToRightOfColumn - index;
+                std::string_view column(str.data() + index, length);
+                result.push_back(column);
+            }
         }
+        const std::string_view finalColumn(str.data() + indexCommaToRightOfColumn + 1, str.size() - indexCommaToRightOfColumn - 1);
+        result.push_back(finalColumn);
+        return result;
     }
-    
-
 
     inline std::vector<std::string> splitString(std::string s, const char delimiter)
     {
@@ -44,4 +54,27 @@ namespace Utils
         REL::Relocation<func_t> func{ REL::ID(66989) };
         return;
     }
+
+    inline bool ToInt(std::string str, int& value)
+    {
+        const char* strVal = str.c_str();
+        char* endVal = NULL;
+        long ret = strtol(strVal, &endVal, 0);
+        if (ret == LONG_MAX || ret == LONG_MIN || (int)endVal != (int)strVal + strlen(strVal))
+            return false;
+        value = ret;
+        return true;
+    }
+
+    inline void damageav(RE::Actor* a, RE::ActorValue av, float val)
+    {
+        if (a) {
+            a->As<RE::ActorValueOwner>()->RestoreActorValue(RE::ACTOR_VALUE_MODIFIER::kDamage, av, -val);
+        }
+        DEBUG("{}'s {} damaged to {}",
+            a->GetName(),
+            av,
+            a->GetActorValue(av));
+    }
+
 }

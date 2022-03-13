@@ -3,7 +3,7 @@
 class payloadHandler {
 public:
 	/*process the parameters of a payload funcion.*/
-	static void process(RE::Actor* actor, std::vector<std::string> param) {
+	static void process(RE::Actor* actor, std::vector<std::string_view> param) {
 		//parse the information in the payload command and execute commands.
 	};
 
@@ -15,7 +15,7 @@ private:
 		}
 	}
 };
-
+/*Deal with animation graph variables.*/
 class graphVariableHandler : public payloadHandler {
 public:
 	/*type of graph variable*/
@@ -24,7 +24,7 @@ public:
 		Int,
 		Bool
 	};
-	static void process(RE::Actor* actor, std::vector<std::string> param, GRAPHVARIABLETYPE graphVariableType);
+	static void process(RE::Actor* actor, std::vector<std::string_view> param, GRAPHVARIABLETYPE graphVariableType);
 
 };
 
@@ -32,11 +32,12 @@ class globalTimeHandler : public payloadHandler {
 public:
 	/*process the parameters of a payload funcion.*/
 	//SGTM takes 1 param.
-	static void process(std::vector<std::string> param);
+	static void process(std::vector<std::string_view> param);
 
 };
 
+/*Deal with spell casting.*/
 class spellCastHandler : public payloadHandler {
 public:
-	static void process(RE::Actor* actor, std::vector<std::string> param);
+	static void process(RE::Actor* actor, std::vector<std::string_view> param);
 };
