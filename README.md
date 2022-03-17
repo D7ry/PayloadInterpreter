@@ -10,15 +10,9 @@ set graph variable int<br/>
 @SGVI|_string of graph variable_|_any int value_|<br/>
 cast a spell<br/>
 @CAST|spell formID|plugin name|effectiveness|magnitude|targetSelf(0/1)|Health Requirement|Health Cost|Stamina Requirement|Stamina Cost|Magicka Requirement|Magicka Cost<br/>
-(unimplemented) @MGVF|"string of graph variable"|any float value| - modify graph variable float<br/> 
-(unimplemented) @MGVI|"string of graph variable"|any int value|- modify graph variable int<br/>
 
 (unimplemented)For actor values:<br/>
 @SAV|actor value(in the form of int)|(magnitude as float)| - set actor value<br/>
 @MAV|av(in the form of int)|-+(magnitude as float)| - modify actor value<br/>
 
 
-
-(unimplemented)Convenience Methods(all begin with "$"):<br/>
-$iFrameOn - enable iFrame<br/>
-$iFrameOff - disbale iFrame<br/>
