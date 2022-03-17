@@ -11,7 +11,7 @@ RE::BSEventNotifyControl animEventHandler::HookedProcessEvent(RE::BSAnimationGra
 	if (a_event.payload.length() == 0) {//events without payload won't get processed
 		return fn ? (this->*fn)(a_event, src) : RE::BSEventNotifyControl::kContinue;
 	}
-	std::string_view payLoad = a_event.payload.data();
+	std::string payLoad = a_event.payload.data();
 	if (payLoad.at(0) == '@') { //only process valid payloads
 		DEBUG("matched custom payload");
 		payloadManager::preProcessPayload(a_event.holder->As<RE::Actor>(), payLoad);

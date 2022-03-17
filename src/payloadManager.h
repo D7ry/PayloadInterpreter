@@ -23,9 +23,9 @@ class payloadManager
 {
 public:
 	/*Tokenize the payload and dedicate it to corresponding handlers.*/
-	static void preProcessPayload(RE::Actor* actor, std::string_view payload) {
+	static void preProcessPayload(RE::Actor* actor, std::string payload) {
 		DEBUG("processing {} for {}", payload, actor->GetName());
-		std::vector<std::string_view> tokens = Utils::tokenize(payload, '|');
+		std::vector<std::string> tokens = Utils::tokenize(payload, '|');
 		switch (hash(tokens[0].data(), tokens[0].size())) {
 		case "@SGVB"_h:
 			graphVariableHandler::process(actor, tokens, graphVariableHandler::GRAPHVARIABLETYPE::Bool); break;
@@ -36,6 +36,8 @@ public:
 			graphVariableHandler::process(actor, tokens, graphVariableHandler::GRAPHVARIABLETYPE::Int); break;
 		case "@CAST"_h:
 			spellCastHandler::process(actor, tokens); break;
+		case "@CAMSHAKE"_h:
+			cameraHandler::process(actor, tokens, cameraHandler::CAMOPTYPE::screenShake); break;
 		}
 		
 

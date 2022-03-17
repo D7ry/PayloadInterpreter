@@ -1,8 +1,9 @@
 #pragma once
-namespace Utils
+class Utils
 {
+public:
     /*Tokenize a string_view into a vector of string_view.*/
-    inline std::vector<std::string_view> tokenize(const std::string_view str, const char delim = '|')
+    static std::vector<std::string_view> tokenize(const std::string_view str, const char delim = '|')
     {
         std::vector<std::string_view> result;
 
@@ -26,7 +27,11 @@ namespace Utils
         return result;
     }
 
-    inline std::vector<std::string> splitString(std::string s, const char delimiter)
+    /*Tokenize a string into vectors, separated by a common delimiter.
+    @param s: string to be tokenized.
+    @param delimiter: the delimiter based on which to tokenize the string.
+    @return a vector containing all tokens.*/
+    static std::vector<std::string> tokenize(std::string s, const char delimiter)
     {
         size_t start = 0;
         size_t end = s.find_first_of(delimiter);
@@ -35,7 +40,12 @@ namespace Utils
 
         while (end <= std::string::npos)
         {
-            output.emplace_back(s.substr(start, end - start));
+            std::string ss = s.substr(start, end - start);
+
+            if (ss.size() != 0) { //if token has 0 size, skip it.
+                output.emplace_back();
+            }
+            
 
             if (end == std::string::npos)
                 break;
@@ -47,7 +57,7 @@ namespace Utils
         return output;
     }
 
-    inline void SGTM(float a_in) {
+    static void SGTM(float a_in) {
         static float* g_SGTM = (float*)REL::ID(511883).address();
         *g_SGTM = a_in;
         using func_t = decltype(SGTM);
@@ -55,7 +65,7 @@ namespace Utils
         return;
     }
 
-    inline bool ToInt(std::string str, int& value)
+    static bool ToInt(std::string str, int& value)
     {
         const char* strVal = str.c_str();
         char* endVal = NULL;
@@ -66,15 +76,12 @@ namespace Utils
         return true;
     }
 
-    inline void damageav(RE::Actor* a, RE::ActorValue av, float val)
+    static void damageav(RE::Actor* a, RE::ActorValue av, float val)
     {
         if (a) {
             a->As<RE::ActorValueOwner>()->RestoreActorValue(RE::ACTOR_VALUE_MODIFIER::kDamage, av, -val);
         }
-        DEBUG("{}'s {} damaged to {}",
-            a->GetName(),
-            av,
-            a->GetActorValue(av));
     }
 
-}
+
+};

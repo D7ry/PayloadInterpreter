@@ -10,7 +10,7 @@ void MessageHandler(SKSE::MessagingInterface::Message* a_msg)
 		REL::Relocation<uintptr_t> pcPtr{ REL::ID(261918) };
 		animEventHandler::HookSink(pcPtr.address());
 		animEventHandler::HookSink(npcPtr.address());
-		DEBUG("Anim event hook sinked");
+		INFO("Anim event hook sinked");
 		break;
 	}
 }
