@@ -1,4 +1,4 @@
-# PayloadFramework
+# Payload Interpreter
 SKSE plugin acting as an interpreter for Skyrim's animation payload, performing corresponding operations.
 
 Common Methods(all begin with "@"):<br/>
