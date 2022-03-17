@@ -22,7 +22,7 @@ For example: if I want to cast a fireball when swinging a weapon, I can add @CAS
 weaponSwing.@CAST|0x002b62|Skyrim.esm|1|1|0|0|0|0|0|20|20
 
 
-**Common Methods(all begin with "@"):<br/>**
+# Common Methods(all begin with "@"):<br/>
 set graph variable bool<br/>
 @SGVB|_string of graph variable_|0(False)/1(True)<br/>
 set graph variable float<br/>
