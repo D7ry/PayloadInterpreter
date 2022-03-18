@@ -53,7 +53,7 @@ This means: at the precise moment when the "weaponSwing" event triggers, I will 
 - Any numerical parameter not specified are treated as float.
 ## Instructions
 set animation variable bool<br/>
-@SGVB|graph variable|0/1(True/False) <br/>
+`@SGVB|graph variable|0/1(True/False)`<br/>
 set animation variable float<br/>
 `@SGVF|graph variable|any float value`<br/>
 set animation variable int<br/>
