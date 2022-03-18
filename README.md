@@ -67,4 +67,7 @@ set the actor to ghost(invincible). If the argument is false, "unghost" the char
 @SAV|actor value(in the form of int)|(magnitude as float) - set actor value
 @MAV|av(in the form of int)|-+(magnitude as float) - modify actor value
 
+# Dummy event
+Payload Interpreter comes with a nemesis behavior patch that installs a dummy animation event into Skyrim that you can safely use. This allows you to call payload instructions freely at any time stamp of any animation. 
 
+The dummy event is `PAE`. For example, `PAE.@CAST|...` is a valid instruction.
