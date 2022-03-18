@@ -1,7 +1,7 @@
 # Payload Interpreter
 SKSE plugin acting as an interpreter for Skyrim's animation payload, performing corresponding operations.
 
-## What's a payload?
+## What is payload?
 Extract your animation's annotation and open it using a text editor. You can see a bunch of annotations.<br/>
 Payloads are the "tail" of annotations, attached to the annotation body, separated by a `.`<br/>
 For example: <br/>
