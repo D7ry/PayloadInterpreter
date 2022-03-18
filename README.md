@@ -43,7 +43,8 @@ This means: at the precise moment when the "weaponSwing" event triggers, I will 
 - parameters are separated by `|`
 - It does not matter whether the last parameter has a closing `|`
   - However, it is suggested to not have the closing `|` for stylistic purpose
-- Boolean values(True/False) corresponds to `0` and `1`; True = `1`, False = `0`
+- Boolean values(True/False) corresponds to `0` and `1`; True = `1`, False = `0`. 
+- Passing in true/false as string for boolean values **will not work**
 - Negative values can be passed in. Simply add `-` in front of any value
 - Quotes are not needed when passing in strings as parameters
   - For example, when trying to cast a spell from `Apocalypse.esp`: <br/>
@@ -53,15 +54,15 @@ This means: at the precise moment when the "weaponSwing" event triggers, I will 
 - Any numerical parameter not specified are treated as float.
 ## Instructions
 set animation variable bool<br/>
-`@SGVB|graph variable|0/1(True/False)`<br/>
+`@SGVB|(string)graph variable|(bool)value`<br/>
 set animation variable float<br/>
-`@SGVF|graph variable|any float value`<br/>
+`@SGVF|(string)graph variable|(float)value`<br/>
 set animation variable int<br/>
-`@SGVI|graph variable|any int value`<br/>
+`@SGVI|(string)graph variable|(int)value `<br/>
 cast a spell<br/>
-`@CAST|spell formID|.esp/.esm/.esl containing the spell|effectiveness|magnitude|targetSelf(0/1)|Health Requirement|Health Cost|Stamina Requirement|Stamina Cost|Magicka Requirement|Magicka Cost`<br/>
-set the actor to ghost <br/>
-`@SETGHOST|True/False(in form of 0/1) `<br/>
+`@CAST|(string)spell formID|(string).esp/.esm/.esl containing the spell|(float)effectiveness|(float)magnitude|(bool)self-targeting|(float)Health Requirement|(float)Health Cost|(float)Stamina Requirement|(float)Stamina Cost|(float)Magicka Requirement|(float)Magicka Cost`<br/>
+set the actor to ghost(invincible). If the argument is false, "unghost" the character, and vice versa. <br/>
+`@SETGHOST|(bool)isghost`<br/>
 (unimplemented)For actor values:<br/>
 @SAV|actor value(in the form of int)|(magnitude as float) - set actor value
 @MAV|av(in the form of int)|-+(magnitude as float) - modify actor value
