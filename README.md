@@ -67,6 +67,6 @@ set the actor to ghost(invincible). If the argument is false, "unghost" the char
 I'm working on more methods. Don't hesitate to let me know if you want to do anything specific through payload.
 
 # Dummy event
-Payload Interpreter comes with a nemesis behavior patch that installs a dummy animation event into Skyrim that you can safely use. This allows you to call payload instructions freely at any time stamp of any animation. 
+Payload Interpreter comes with a nemesis behavior patch that installs a dummy animation event into Skyrim that you can safely use. This allows you to call payload instructions freely at any time stamp of any animation, by first adding the dummy animation event, then attaching the payload instruction to the dummy event.
 
 The dummy event is `PIE`. For example, `PIE.@CAST|...` is a valid instruction.
