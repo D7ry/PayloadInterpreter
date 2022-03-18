@@ -26,6 +26,7 @@ public:
 	static void preProcessPayload(RE::Actor* actor, std::string payload) {
 		DEBUG("processing {} for {}", payload, actor->GetName());
 		std::vector<std::string> tokens = Utils::tokenize(payload, '|');
+		DEBUG(tokens[0]);
 		switch (hash(tokens[0].data(), tokens[0].size())) {
 		case "@SGVB"_h:
 			graphVariableHandler::process(actor, tokens, graphVariableHandler::GRAPHVARIABLETYPE::Bool); break;

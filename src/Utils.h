@@ -43,7 +43,7 @@ public:
             std::string ss = s.substr(start, end - start);
 
             if (ss.size() != 0) { //if token has 0 size, skip it.
-                output.emplace_back();
+                output.emplace_back(ss);
             }
             
 

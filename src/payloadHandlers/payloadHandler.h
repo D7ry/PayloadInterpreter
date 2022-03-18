@@ -4,16 +4,20 @@ class payloadHandler {
 public:
 	/*process the parameters of a payload funcion.*/
 	static void process(RE::Actor* actor, std::vector<std::string> param) {
-		//parse the information in the payload command and execute commands.
+		//interpret the information in the payload command and execute commands.
 	};
 
 	/*Prints out an error message and the command errored on.
-	@param params: tokenized instruction.
+	@param v: tokenized instruction.
 	@param errMsg: Error message to print.*/
-	static void printErrMsg(std::vector<std::string> params, std::string errMsg) {
-		std::string orgCmd = std::accumulate(params.begin(), params.end(), std::string{}); //Concatenate the params to obtain original command
+	static void printErrMsg(std::vector<std::string> v, std::string errMsg) {
+		std::string org;
+		if (auto i = v.begin(), e = v.end(); i != e) {
+			org += *i++;
+			for (; i != e; ++i) org.append("|").append(*i);
+		};
 		INFO("Error: " + errMsg + " "
-			+ "Errored instruction: " + orgCmd);
+			+ "Errored instruction: " + org);
 	}
 	/*check if the amount of parameter in the vector is correct. If not, prints an error message.
 	@param param: vector containing all parameters.
@@ -23,7 +27,7 @@ public:
 		if (param.size() != ct) {
 			printErrMsg(param,
 				"incorrect number of parameters passed in, expected: "
-				+ std::to_string(ct) + "received: " + std::to_string(param.size())
+				+ std::to_string(ct) + " received: " + std::to_string(param.size())
 			);
 			return false;
 		}
