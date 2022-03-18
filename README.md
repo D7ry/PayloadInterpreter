@@ -32,7 +32,7 @@ set graph variable int<br/>
 cast a spell<br/>
 @CAST|spell formID|plugin name|effectiveness|magnitude|targetSelf(0/1)|Health Requirement|Health Cost|Stamina Requirement|Stamina Cost|Magicka Requirement|Magicka Cost<br/>
 @SETGHOST|True/False(in form of 0/1) <br/>
-set the actor to ghost
+set the actor to ghost <br/>
 (unimplemented)For actor values:<br/>
 @SAV|actor value(in the form of int)|(magnitude as float) - set actor value<br/>
 @MAV|av(in the form of int)|-+(magnitude as float) - modify actor value<br/>
