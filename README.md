@@ -75,5 +75,5 @@ cast a spell<br/>
 set the actor to ghost(invincible). If the argument is false, "unghost" the character, and vice versa. <br/>
 `@SETGHOST|(bool)isghost`<br/>
 
-I'm working on more methods. Don't hesitate to let me know if you want to do anything specific through payload.
+I'm working on adding many more methods. Don't hesitate to let me know if you want to do anything specific through payload.
 
