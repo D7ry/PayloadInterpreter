@@ -77,3 +77,5 @@ set the actor to ghost(invincible). If the argument is false, "unghost" the char
 
 I'm working on adding many more methods. Don't hesitate to let me know if you want to do anything specific through payload.
 
+## DEBUG
+If you think you did everything right and nothing shows up in your game, you can look up the plugin log from `c\users\yourUserName\Documents\My Games\Skyrim Special Edition\SKSE\PayloadFramework.log`. The log will prints out precisely the errored payload.
