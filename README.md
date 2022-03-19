@@ -46,7 +46,7 @@ This means: at the precise moment when the "weaponSwing" event triggers, I will 
 - Boolean values(True/False) corresponds to `0` and `1`; True = `1`, False = `0`. 
 - Passing in true/false as string for boolean values **will not work**
 - Negative values can be passed in. Simply add `-` in front of any value
-- Quotes are not needed when passing in strings as parameters
+- Quotation marks are not needed when passing in strings as parameters
   - For example, when trying to cast a spell from `Apocalypse.esp`: <br/>
    `@CAST|0X001|Apocalypse.esp|....` is correct <br/>
    `@CAST|0X001|"Apocalypse.esp"|....` is incorrect <br/>
