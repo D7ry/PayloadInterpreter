@@ -28,13 +28,13 @@ In this case, the desired annotation is `weaponSwing` in my attack animation. <b
 
 Then, attach the payload instruction and its parameters onto that annotation. <br/>
 
-In this case, the payload is `@CAST|0x002b62|Skyrim.esm|1|1|0|0|0|0|0|20|20` <br/>
+In this case, the payload is `@CAST|0x12FD0|Skyrim.esm|1|1|0|0|0|0|0|20|20` <br/>
 
 The resulting annotation looks like: <br/>
 
-`weaponSwing.@CAST|0x002b62|Skyrim.esm|1|1|0|0|0|0|0|20|20` <br/>
+`weaponSwing.@CAST|0x12FD0|Skyrim.esm|1|1|0|0|0|0|0|20|20` <br/>
 
-This means: at the precise moment when the "weaponSwing" event triggers, I will cast a spell with formID 0x002b62 stored in Skyrim.esm. The spell has both effectiveness and magnitude being 1, and requires 20 magicka to cast, and also costs 20 magicka.
+This means: at the precise moment when the "weaponSwing" event triggers, I will cast a spell with formID 0x12FD0(firebolt) stored in Skyrim.esm. The spell has both effectiveness and magnitude being 1, and requires 20 magicka to cast, and also costs 20 magicka.
 
 # List of Instructions
 ## Rules
