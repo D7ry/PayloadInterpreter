@@ -52,6 +52,16 @@ This means: at the precise moment when the "weaponSwing" event triggers, I will 
    `@CAST|0X001|"Apocalypse.esp"|....` is incorrect <br/>
 - Instructions are case sensitive
 - Any numerical parameter not specified are treated as float.
+
+
+## Dummy event
+You have the freedom to attach a payload instruction to any valid animation event. However, you might want to trigger something at a timestamp where there is no animation event to attach payload to. <br/>
+Payload Interpreter comes with a nemesis behavior patch that installs a dummy animation event into Skyrim that you can safely use. This allows you to call payload instructions freely at any time stamp of any animation, by first adding the dummy animation event, then attaching the payload instruction to the dummy event.
+
+The dummy event is `PIE`. For example, `PIE.@CAST|...` is a valid instruction.
+
+Unlike other events(e.g. weaponSwing, hitFrame), `PIE` itself does absolutely nothing. It exists solely to be a host of payload instructions. You can have as many `PIE` in a single animation as you like.
+
 ## Instructions
 set animation variable bool<br/>
 `@SGVB|(string)graph variable|(bool)value`<br/>
@@ -66,9 +76,3 @@ set the actor to ghost(invincible). If the argument is false, "unghost" the char
 
 I'm working on more methods. Don't hesitate to let me know if you want to do anything specific through payload.
 
-# Dummy event
-Payload Interpreter comes with a nemesis behavior patch that installs a dummy animation event into Skyrim that you can safely use. This allows you to call payload instructions freely at any time stamp of any animation, by first adding the dummy animation event, then attaching the payload instruction to the dummy event.
-
-The dummy event is `PIE`. For example, `PIE.@CAST|...` is a valid instruction.
-
-Unlike other events(e.g. weaponSwing, hitFrame), `PIE` itself does absolutely nothing. It exists solely to be a host of payload instructions. You can have as many `PIE` in a single animation as you like.
