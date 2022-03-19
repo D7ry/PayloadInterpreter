@@ -19,12 +19,12 @@ public:
 		INFO("Error: " + errMsg + " "
 			+ "Errored instruction: " + org);
 	}
-	/*check if the amount of parameter in the vector is correct. If not, prints an error message.
-	@param param: vector containing all parameters.
+	/*check if the amount of parameter in the vector is correct, ignoring the instruction. If not, prints an error message.
+	@param param: vector containing all parameters and instruction.
 	@param ct: expected i.e. correct number of parameters.
 	@return whether the number of tokens in param matches ct.*/
 	static inline bool checkParamCt(std::vector<std::string> param, int ct) {
-		if (param.size() != ct) {
+		if (param.size() != ct + 1) {
 			printErrMsg(param,
 				"incorrect number of parameters passed in, expected: "
 				+ std::to_string(ct) + " received: " + std::to_string(param.size())
@@ -73,4 +73,21 @@ public:
 	};
 	/*Shakes the player's camera.*/
 	static void process(RE::Actor* actor, std::vector<std::string> param, CAMOPTYPE op);
+};
+
+class setGhostHandler : public payloadHandler {
+public:
+	static void process(RE::Actor* actor, std::vector<std::string> param);
+};
+
+/*add and remove magic effects*/
+class mgefHandler : public payloadHandler {
+public:
+	static void process(RE::Actor* actor, std::vector<std::string> v);
+};
+
+/*Apply .nif effects*/
+class nifHandler : public payloadHandler {
+public:
+	static void process(RE::Actor* actor, std::vector<std::string> v);
 };

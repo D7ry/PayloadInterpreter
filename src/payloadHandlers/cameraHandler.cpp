@@ -11,7 +11,7 @@ void cameraHandler::process(RE::Actor* actor, std::vector<std::string> arr, CAMO
 	if (!actor->IsPlayerRef()) {
 		return;
 	}
-	if (!checkParamCt(arr, 3)) {
+	if (!checkParamCt(arr, 2)) {
 		return;
 	};
 	switch (op) {

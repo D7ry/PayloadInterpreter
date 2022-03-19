@@ -8,22 +8,23 @@ inline void setGraphVariableBool(RE::Actor* actor, std::vector<std::string> in) 
 	default: ERROR("Error: Wrong payload input!");
 	}
 	actor->SetGraphVariableBool(in[1], b);
-	DEBUG("set {}'s graph variable bool {} to {}", actor->GetName(), in[1], in[2]);
+	//DEBUG("set {}'s graph variable bool {} to {}", actor->GetName(), in[1], in[2]);
 }
 
 inline void setGraphVariableFloat(RE::Actor* actor, std::vector<std::string> in) {
 	actor->SetGraphVariableFloat(in[1].data(), std::stof(in[2]));
-	DEBUG("set {}'s graph variable float {} to {}", actor->GetName(), in[1], in[2]);
+	//DEBUG("set {}'s graph variable float {} to {}", actor->GetName(), in[1], in[2]);
 }
 
 inline void setGraphVariableInt(RE::Actor* actor, std::vector<std::string> in) {
+	//DEBUG("HOE DISTAR 4");
 	actor->SetGraphVariableInt(in[1], std::stoi(in[2]));
-	DEBUG("set {}'s graph variable int {} to {}", actor->GetName(), in[1], std::stoi(in[2]));
+	//DEBUG("set {}'s graph variable int {} to {}", actor->GetName(), in[1], std::stoi(in[2]));
 }
 
 
 void graphVariableHandler::process(RE::Actor* actor, std::vector<std::string> param, GRAPHVARIABLETYPE graphVariableType) {
-	if (checkParamCt(param, 3)) {
+	if (!checkParamCt(param, 2)) {
 		return;
 	}
 	switch (graphVariableType) {

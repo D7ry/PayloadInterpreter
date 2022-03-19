@@ -24,9 +24,9 @@ class payloadManager
 public:
 	/*Tokenize the payload and dedicate it to corresponding handlers.*/
 	static void preProcessPayload(RE::Actor* actor, std::string payload) {
-		DEBUG("processing {} for {}", payload, actor->GetName());
+		//DEBUG("processing {} for {}", payload, actor->GetName());
 		std::vector<std::string> tokens = Utils::tokenize(payload, '|');
-		DEBUG(tokens[0]);
+		//DEBUG(tokens[0]);
 		switch (hash(tokens[0].data(), tokens[0].size())) {
 		case "@SGVB"_h:
 			graphVariableHandler::process(actor, tokens, graphVariableHandler::GRAPHVARIABLETYPE::Bool); break;
@@ -39,6 +39,12 @@ public:
 			spellCastHandler::process(actor, tokens); break;
 		case "@CAMSHAKE"_h:
 			cameraHandler::process(actor, tokens, cameraHandler::CAMOPTYPE::screenShake); break;
+		case "@SETGHOST"_h:
+			setGhostHandler::process(actor, tokens); break;
+		case "PLAYNIF"_h:
+			nifHandler::process(actor, tokens); break;
+		default:
+			INFO("Error: invalid instruction: " + payload);
 		}
 		
 

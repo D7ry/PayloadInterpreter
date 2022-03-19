@@ -13,10 +13,11 @@ RE::BSEventNotifyControl animEventHandler::HookedProcessEvent(RE::BSAnimationGra
 	}
 	std::string payLoad = a_event.payload.data();
 	if (payLoad.at(0) == '@') { //only process valid payloads
-		DEBUG("matched custom payload");
-		DEBUG(payLoad);
+		//DEBUG("matched custom payload");
+		//DEBUG(payLoad);
 		payloadManager::preProcessPayload(a_event.holder->As<RE::Actor>(), payLoad);
 	}
+
 
 
     return fn ? (this->*fn)(a_event, src) : RE::BSEventNotifyControl::kContinue;

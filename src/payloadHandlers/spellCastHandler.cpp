@@ -15,7 +15,7 @@ void spellCastHandler::process(RE::Actor* actor, std::vector<std::string> arr){
 	// 10 = Magicka requirement (float
 	// 11 = Magicka cost (float
 	//Read spell
-	if (!checkParamCt(arr, 12)) {
+	if (!checkParamCt(arr, 11)) {
 		return;
 	}
 	int spellForm = 0;
