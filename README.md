@@ -56,7 +56,8 @@ This means: at the precise moment when the "weaponSwing" event triggers, I will 
 
 ## Dummy event
 You have the freedom to attach a payload instruction to any valid animation event. However, you might want to trigger something at a timestamp where there is no animation event to attach payload to. <br/>
-Payload Interpreter comes with a nemesis behavior patch that installs a dummy animation event into Skyrim that you can safely use. This allows you to call payload instructions freely at any time stamp of any animation, by first adding the dummy animation event, then attaching the payload instruction to the dummy event.
+
+Payload Interpreter comes with a nemesis behavior patch that installs a dummy animation event into Skyrim you can safely use. This allows you to call payload instructions freely at any time stamp of any animation, by first adding the dummy animation event, then attaching the payload instruction to the dummy event.
 
 The dummy event is `PIE`. For example, `PIE.@CAST|...` is a valid instruction.
 
