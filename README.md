@@ -78,6 +78,41 @@ Unlike other events(e.g. weaponSwing, hitFrame), `PIE` itself does absolutely no
 - play a nif effect on the actor
   - `@PLAYNIF|(string)nif's path, relative to "meshes" folder|(int)body part index|(float)nif scale|(float)play time|(float)X offset|(float)Y offset|(float)Z offset`
   - works only for bipeds currently
+  - list of indices
+    ```
+    kHead = 0,
+    kHair = 1,
+    kBody = 2,
+    kHands = 3,
+    kForearms = 4,
+    kAmulet = 5,
+    kRing = 6,
+    kFeet = 7,
+    kCalves = 8,
+    kShield = 9,
+    kTail = 10,
+    kLongHair = 11,
+    kCirclet = 12,
+    kEars = 13,
+    kDecapitateHead = 20,
+    kDecapitate = 21,
+    kFX01 = 31,
+
+    kEditorTotal = 32,
+
+    kHandToHandMelee = kEditorTotal,
+    kOneHandSword = 33,
+    kOneHandDagger = 34,
+    kOneHandAxe = 35,
+    kOneHandMace = 36,
+    kTwoHandMelee = 37,
+    kBow = 38,
+    kStaff = 39,
+    kCrossbow = 40,
+    kQuiver = 41,
+
+    kTotal = 42
+    ```
 I'm working on adding many more methods. Don't hesitate to let me know if you want to do anything specific through payload.
 
 ## DEBUG
