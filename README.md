@@ -64,17 +64,20 @@ The dummy event is `PIE`. For example, `PIE.@CAST|...` is a valid instruction.
 Unlike other events(e.g. weaponSwing, hitFrame), `PIE` itself does absolutely nothing. It exists solely to be a host of payload instructions. You can have as many `PIE` in a single animation as you like.
 
 ## Instructions
-set animation variable bool<br/>
-`@SGVB|(string)graph variable|(bool)value`<br/>
-set animation variable float<br/>
-`@SGVF|(string)graph variable|(float)value`<br/>
-set animation variable int<br/>
-`@SGVI|(string)graph variable|(int)value `<br/>
-cast a spell<br/>
-`@CAST|(string)spell formID|(string).esp/.esm/.esl containing the spell|(float)effectiveness|(float)magnitude|(bool)self-targeting|(float)Health Requirement|(float)Health Cost|(float)Stamina Requirement|(float)Stamina Cost|(float)Magicka Requirement|(float)Magicka Cost`<br/>
-set the actor to ghost(invincible). If the argument is false, "unghost" the character, and vice versa. <br/>
-`@SETGHOST|(bool)isghost`<br/>
-
+- set animation variable bool<br/>
+  - `@SGVB|(string)graph variable|(bool)value`<br/>
+- set animation variable float<br/>
+  - `@SGVF|(string)graph variable|(float)value`<br/>
+- set animation variable int<br/>
+  - `@SGVI|(string)graph variable|(int)value `<br/>
+- cast a spell<br/>
+  - `@CAST|(string)spell formID|(string).esp/.esm/.esl containing the spell|(float)effectiveness|(float)magnitude|(bool)self-targeting|(float)Health Requirement|(float)Health Cost|(float)Stamina Requirement|(float)Stamina Cost|(float)Magicka Requirement|(float)Magicka Cost`<br/>
+- set the actor to ghost(invincible). If the argument is false, "unghost" the character, and vice versa. <br/>
+  - `@SETGHOST|(bool)isghost`<br/>
+  - when in ghost state, the character will not get hit by anything(weapon&spell), but can hit others. 
+- play a nif effect on the actor
+  - `@PLAYNIF|(string)nif's path, relative to "meshes" folder|(int)body part index|(float)nif scale|(float)play time|(float)X offset|(float)Y offset|(float)Z offset`
+  - works only for bipeds currently
 I'm working on adding many more methods. Don't hesitate to let me know if you want to do anything specific through payload.
 
 ## DEBUG
