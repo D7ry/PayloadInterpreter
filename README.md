@@ -76,7 +76,7 @@ Unlike other events(e.g. weaponSwing, hitFrame), `PIE` itself does absolutely no
   - `@SETGHOST|(bool)isghost`<br/>
   - when in ghost state, the character will not get hit by anything(weapon&spell), but can hit others. 
 - play a nif effect on the actor
-  - `@PLAYNIF|(string)nif's path, relative to "meshes" folder|(int)body part index|(float)nif scale|(float)play time|(float)X offset|(float)Y offset|(float)Z offset`
+  - `@PLAYNIF|(string)nif's path, relative to "meshes" folder|(int)body part index|(float)nif scale|(float)play time|(utin32) flags|(float)X offset|(float)Y offset|(float)Z offset`
   - works only for bipeds currently
   - list of indices
     ```
