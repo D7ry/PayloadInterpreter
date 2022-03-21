@@ -1,6 +1,8 @@
 #include "payloadHandlers/payloadHandler.h"
 #include "Utils.h"
+#include "lib/robin_hood.h"
 #pragma once
+
 constexpr uint32_t hash(const char* data, size_t const size) noexcept
 {
 	uint32_t hash = 5381;
@@ -17,16 +19,14 @@ constexpr uint32_t operator"" _h(const char* str, size_t size) noexcept
 	return hash(str, size);
 }
 
-
 /*class pre-processing all payloads and filter out unwanted ones.*/
 class payloadManager
 {
+	/*Mapping of pre-defined instructions to actual tokenized instructions.*/
+	static inline robin_hood::unordered_map<std::string, std::vector<std::string>> preDefinedInstructions;
 public:
-	/*Tokenize the payload and dedicate it to corresponding handlers.*/
-	static void preProcessPayload(RE::Actor* actor, std::string payload) {
-		//DEBUG("processing {} for {}", payload, actor->GetName());
-		std::vector<std::string> tokens = Utils::tokenize(payload, '|');
-		//DEBUG(tokens[0]);
+	/*Dedicate payload to corresponding handlers.*/
+	static void preProcessPayload(RE::Actor* actor, std::vector<std::string> tokens) {
 		switch (hash(tokens[0].data(), tokens[0].size())) {
 		case "@SGVB"_h:
 			graphVariableHandler::process(actor, tokens, graphVariableHandler::GRAPHVARIABLETYPE::Bool); break;
@@ -41,19 +41,21 @@ public:
 			cameraHandler::process(actor, tokens, cameraHandler::CAMOPTYPE::screenShake); break;
 		case "@SETGHOST"_h:
 			setGhostHandler::process(actor, tokens); break;
-		case "PLAYNIF"_h:
-			nifHandler::process(actor, tokens); break;
+		case "@PLAYPARTICLE"_h:
+			particleHandler::process(actor, tokens); break;
 		default:
-			INFO("Error: invalid instruction: " + payload);
+			payloadHandler::printErrMsg(tokens, "Invalid instruction.");
 		}
-		
-
-
 	};
 
-	/*revert all changes caused by payload.*/
-	static void revertChanges(RE::Actor* actor) {
-
+	static void matchDefinedPayload(RE::Actor* actor, std::string payload) {
+		auto tokenizedPayload = preDefinedInstructions.find(payload);
+		if (tokenizedPayload != preDefinedInstructions.end()) {
+			preProcessPayload(actor, tokenizedPayload->second);
+		}
 	}
+
+private:
+	
 
 };

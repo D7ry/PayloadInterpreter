@@ -15,7 +15,11 @@ RE::BSEventNotifyControl animEventHandler::HookedProcessEvent(RE::BSAnimationGra
 	if (payLoad.at(0) == '@') { //only process valid payloads
 		//DEBUG("matched custom payload");
 		//DEBUG(payLoad);
-		payloadManager::preProcessPayload(a_event.holder->As<RE::Actor>(), payLoad);
+		payloadManager::preProcessPayload(a_event.holder->As<RE::Actor>(), Utils::tokenize(payLoad, '|'));
+	} 
+	else if (payLoad.at(0) == '$') {
+		DEBUG("matched pre-defined payload");
+		payloadManager::matchDefinedPayload(a_event.holder->As<RE::Actor>(), payLoad);
 	}
 
 

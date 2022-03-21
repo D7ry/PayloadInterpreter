@@ -27,7 +27,7 @@ public:
 		if (param.size() != ct + 1) {
 			printErrMsg(param,
 				"incorrect number of parameters passed in, expected: "
-				+ std::to_string(ct) + " received: " + std::to_string(param.size())
+				+ std::to_string(ct) + " received: " + std::to_string(param.size() - 1)
 			);
 			return false;
 		}
@@ -87,7 +87,7 @@ public:
 };
 
 /*Apply .nif effects*/
-class nifHandler : public payloadHandler {
+class particleHandler : public payloadHandler {
 public:
 	static void process(RE::Actor* actor, std::vector<std::string> v);
 };
