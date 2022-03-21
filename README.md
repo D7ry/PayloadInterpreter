@@ -36,7 +36,7 @@ The resulting annotation looks like: <br/>
 
 This means: at the precise moment when the "weaponSwing" event triggers, I will cast a spell with formID 0x12FD0(firebolt) stored in Skyrim.esm. The spell has both effectiveness and magnitude being 1, and requires 20 magicka to cast, and also costs 20 magicka.
 
-# List of Instructions
+# Instructions
 ## Rules
 - all payloads are connected to annotations with a `.`
 - all payload instructions has a preceding `@`
@@ -48,8 +48,8 @@ This means: at the precise moment when the "weaponSwing" event triggers, I will 
 - Negative values can be passed in. Simply add `-` in front of any value
 - Quotation marks are not needed when passing in strings as parameters
   - For example, when trying to cast a spell from `Apocalypse.esp`: <br/>
-   `@CAST|0X001|Apocalypse.esp|....` is correct <br/>
-   `@CAST|0X001|"Apocalypse.esp"|....` is incorrect <br/>
+   `@CASTSPELL|0X001|Apocalypse.esp|....` is correct <br/>
+   `@CASTSPELL|0X001|"Apocalypse.esp"|....` is incorrect <br/>
 - Instructions are case sensitive
 - Any numerical parameter not specified are treated as float.
 
@@ -63,7 +63,7 @@ The dummy event is `PIE`. For example, `PIE.@CAST|...` is a valid instruction.
 
 Unlike other events(e.g. weaponSwing, hitFrame), `PIE` itself does absolutely nothing. It exists solely to be a host of payload instructions. You can have as many `PIE` in a single animation as you like.
 
-## Instructions
+## List of instructions
 - set animation variable bool<br/>
   - `@SGVB|(string)graph variable|(bool)value`<br/>
 - set animation variable float<br/>
@@ -71,7 +71,8 @@ Unlike other events(e.g. weaponSwing, hitFrame), `PIE` itself does absolutely no
 - set animation variable int<br/>
   - `@SGVI|(string)graph variable|(int)value `<br/>
 - cast a spell<br/>
-  - `@CAST|(string)spell formID|(string).esp/.esm/.esl containing the spell|(float)effectiveness|(float)magnitude|(bool)self-targeting|(float)Health Requirement|(float)Health Cost|(float)Stamina Requirement|(float)Stamina Cost|(float)Magicka Requirement|(float)Magicka Cost`<br/>
+  - `@CASTSPELL|(string)spell formID|(string).esp/.esm/.esl containing the spell|(float)effectiveness|(float)magnitude|(bool)self-targeting|(float)Health Requirement|(float)Health Cost|(float)Stamina Requirement|(float)Stamina Cost|(float)Magicka Requirement|(float)Magicka Cost`<br/>
+  - `@CAST|...` can also be used
 - set the actor to ghost(invincible). If the argument is false, "unghost" the character, and vice versa. <br/>
   - `@SETGHOST|(bool)isghost`<br/>
   - when in ghost state, the character will not get hit by anything(weapon&spell), but can hit others. 
@@ -115,6 +116,35 @@ Unlike other events(e.g. weaponSwing, hitFrame), `PIE` itself does absolutely no
     kTotal = 42
     ```
 I'm working on adding many more methods. Don't hesitate to let me know if you want to do anything specific through payload.
+
+## User-Defined instructions
+Having many payload instructions can clutter the annotation and making things difficult to manage. Instead of putting native instructions directly in the annotation, you can define your own payload instruction that maps to one or multiple native instructions, through an .ini file. This way, you can manage and modify specific parameters in the .ini file, without the need to re-annotate.<br/>
+
+- All custom instructions must begin with `$`
+- A custom instruction can be mapped to multiple instructions. Example below.
+- .ini file should be stored in SKSE/PayloadInterpreter/Config
+- .ini file must have at least one section. Example below.
+
+### Example:
+```
+[WeaponArt]
+$shieldCharge = @PLAYPARTICLE|ValhallaCombat/impactShieldRoot.nif|3|1|0|4U|0|50|50
+$shieldCharge = @CAMSHAKE|1|0.5
+$shieldCharge = @CAST|0x12FD0|Skyrim.esm|1|1|0|0|0|0|0|20|20
+
+$swordFlame = @CAST|0x12FD0|Skyrim.esm|1|1|0|0|0|0|0|20|20
+$swordFlame = @CAMSHAKE|2|5
+$swordFlame = @PLAYPARTICLE|ValhallaCombat/impactSwordRoot.nif|3|1|0|4U|0|50|50
+
+[Convenience]
+$enableIframe = @SETGHOST|1
+$disableIframe = @SETGHOST|0
+```
+- The above case consists of two sections: `WeaponArt` and `Convenience`. There are no specific rule for section grouping/naming, organize as you wish, but make sure to have at least one section.
+- In `WeaponArt` section, `$swordFlame ` is a custom instruction that is mapped to three native instructions. 
+  - In other words, if you attach `$swordFlame` to `weaponSwing`, when you swing your weapon, your camera shakes, a particle effect is played in front of you, and you cast a firebolt spell.
+  - Because the parameters of those instructions are written in an .ini file, you can easily modify the spell costs or the .nif file being played, without re-annotating.
+- In `Convenience` section, `$enableIframe` is mapped to one native instruction `@SETGHOST|1`. While it seems unncessary as they're about the same length, this custom payload allows for better clarity.
 
 ## DEBUG
 If you think you did everything right and nothing shows up in your game, you can look up the plugin log from `c\users\yourUserName\Documents\My Games\Skyrim Special Edition\SKSE\PayloadFramework.log`. The log will prints out precisely the errored payload.
