@@ -141,7 +141,7 @@ $enableIframe = @SETGHOST|1
 $disableIframe = @SETGHOST|0
 ```
 - The above case consists of two sections: `WeaponArt` and `Convenience`. There are no specific rule for section grouping/naming, organize as you wish, but make sure to have at least one section.
-- In `WeaponArt` section, `$swordFlame ` is a custom instruction that is mapped to three native instructions. 
+- In `WeaponArt` section, `$swordFlame` is a custom instruction mapped to three native instructions:`@CAST`, `@CAMSHAKE`, and `@PLAYPARTICLE`
   - In other words, if you attach `$swordFlame` to `weaponSwing`, when you swing your weapon, your camera shakes, a particle effect is played in front of you, and you cast a firebolt spell.
   - Because the parameters of those instructions are written in an .ini file, you can easily modify the spell costs or the .nif file being played, without re-annotating.
 - In `Convenience` section, `$enableIframe` is mapped to one native instruction `@SETGHOST|1`. While it seems unncessary as they're about the same length, this custom payload allows for better clarity.
