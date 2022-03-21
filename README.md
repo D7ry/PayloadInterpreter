@@ -64,17 +64,56 @@ The dummy event is `PIE`. For example, `PIE.@CAST|...` is a valid instruction.
 Unlike other events(e.g. weaponSwing, hitFrame), `PIE` itself does absolutely nothing. It exists solely to be a host of payload instructions. You can have as many `PIE` in a single animation as you like.
 
 ## Instructions
-set animation variable bool<br/>
-`@SGVB|(string)graph variable|(bool)value`<br/>
-set animation variable float<br/>
-`@SGVF|(string)graph variable|(float)value`<br/>
-set animation variable int<br/>
-`@SGVI|(string)graph variable|(int)value `<br/>
-cast a spell<br/>
-`@CAST|(string)spell formID|(string).esp/.esm/.esl containing the spell|(float)effectiveness|(float)magnitude|(bool)self-targeting|(float)Health Requirement|(float)Health Cost|(float)Stamina Requirement|(float)Stamina Cost|(float)Magicka Requirement|(float)Magicka Cost`<br/>
-set the actor to ghost(invincible). If the argument is false, "unghost" the character, and vice versa. <br/>
-`@SETGHOST|(bool)isghost`<br/>
+- set animation variable bool<br/>
+  - `@SGVB|(string)graph variable|(bool)value`<br/>
+- set animation variable float<br/>
+  - `@SGVF|(string)graph variable|(float)value`<br/>
+- set animation variable int<br/>
+  - `@SGVI|(string)graph variable|(int)value `<br/>
+- cast a spell<br/>
+  - `@CAST|(string)spell formID|(string).esp/.esm/.esl containing the spell|(float)effectiveness|(float)magnitude|(bool)self-targeting|(float)Health Requirement|(float)Health Cost|(float)Stamina Requirement|(float)Stamina Cost|(float)Magicka Requirement|(float)Magicka Cost`<br/>
+- set the actor to ghost(invincible). If the argument is false, "unghost" the character, and vice versa. <br/>
+  - `@SETGHOST|(bool)isghost`<br/>
+  - when in ghost state, the character will not get hit by anything(weapon&spell), but can hit others. 
+- play a nif particle effect on the actor
+  - `@PLAYPARTICLE|(string).nif file's relative path|(int)body part index|(float)nif scale|(float)play time|(utin32) flags|(float)X offset|(float)Y offset|(float)Z offset`
+  - works only for bipeds currently
+  - nif's path is relative to `meshes` folder, and subdirectories are to be separated with `/`. If my .nif file is in stored in `meshes/ValhallaCombat` and is named `block_Counter.nif`, the argument I want to pass in is `ValhallaCombat/block_Counter.nif`
+  - list of body part indices(for none-weapon indices, some are incorrect. For example kHands actually points to head. I encourage you to try with weapon indices(numbers bigger than 33))
+    ```
+    kHead = 0,
+    kHair = 1,
+    kBody = 2,
+    kHands = 3,
+    kForearms = 4,
+    kAmulet = 5,
+    kRing = 6,
+    kFeet = 7,
+    kCalves = 8,
+    kShield = 9,
+    kTail = 10,
+    kLongHair = 11,
+    kCirclet = 12,
+    kEars = 13,
+    kDecapitateHead = 20,
+    kDecapitate = 21,
+    kFX01 = 31,
 
+    kEditorTotal = 32,
+
+    kHandToHandMelee = kEditorTotal,
+    kOneHandSword = 33,
+    kOneHandDagger = 34,
+    kOneHandAxe = 35,
+    kOneHandMace = 36,
+    kTwoHandMelee = 37,
+    kBow = 38,
+    kStaff = 39,
+    kCrossbow = 40,
+    kQuiver = 41,
+
+    kTotal = 42
+    ```
 I'm working on adding many more methods. Don't hesitate to let me know if you want to do anything specific through payload.
 
 ## DEBUG
