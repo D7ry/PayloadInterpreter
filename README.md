@@ -48,8 +48,8 @@ This means: at the precise moment when the "weaponSwing" event triggers, I will 
 - Negative values can be passed in. Simply add `-` in front of any value
 - Quotation marks are not needed when passing in strings as parameters
   - For example, when trying to cast a spell from `Apocalypse.esp`: <br/>
-   `@CAST|0X001|Apocalypse.esp|....` is correct <br/>
-   `@CAST|0X001|"Apocalypse.esp"|....` is incorrect <br/>
+   `@CASTSPELL|0X001|Apocalypse.esp|....` is correct <br/>
+   `@CASTSPELL|0X001|"Apocalypse.esp"|....` is incorrect <br/>
 - Instructions are case sensitive
 - Any numerical parameter not specified are treated as float.
 
@@ -71,7 +71,7 @@ Unlike other events(e.g. weaponSwing, hitFrame), `PIE` itself does absolutely no
 - set animation variable int<br/>
   - `@SGVI|(string)graph variable|(int)value `<br/>
 - cast a spell<br/>
-  - `@CAST|(string)spell formID|(string).esp/.esm/.esl containing the spell|(float)effectiveness|(float)magnitude|(bool)self-targeting|(float)Health Requirement|(float)Health Cost|(float)Stamina Requirement|(float)Stamina Cost|(float)Magicka Requirement|(float)Magicka Cost`<br/>
+  - `@CASTSPELL|(string)spell formID|(string).esp/.esm/.esl containing the spell|(float)effectiveness|(float)magnitude|(bool)self-targeting|(float)Health Requirement|(float)Health Cost|(float)Stamina Requirement|(float)Stamina Cost|(float)Magicka Requirement|(float)Magicka Cost`<br/>
 - set the actor to ghost(invincible). If the argument is false, "unghost" the character, and vice versa. <br/>
   - `@SETGHOST|(bool)isghost`<br/>
   - when in ghost state, the character will not get hit by anything(weapon&spell), but can hit others. 
