@@ -18,8 +18,7 @@ RE::BSEventNotifyControl animEventHandler::HookedProcessEvent(RE::BSAnimationGra
 		payloadManager::preProcessPayload(a_event.holder->As<RE::Actor>(), Utils::tokenize(payLoad, '|'));
 	} 
 	else if (payLoad.at(0) == '$') {
-		DEBUG("matched pre-defined payload");
-		payloadManager::matchDefinedPayload(a_event.holder->As<RE::Actor>(), payLoad);
+		payloadManager::matchPreDefinedPayload(a_event.holder->As<RE::Actor>(), payLoad);
 	}
 
 

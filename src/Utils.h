@@ -31,7 +31,7 @@ public:
     @param s: string to be tokenized.
     @param delimiter: the delimiter based on which to tokenize the string.
     @return a vector containing all tokens.*/
-    static std::vector<std::string> tokenize(std::string s, const char delimiter)
+    static std::vector<std::string> tokenize(std::string s, const char delimiter = '|')
     {
         size_t start = 0;
         size_t end = s.find_first_of(delimiter);

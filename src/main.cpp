@@ -1,4 +1,5 @@
 #include "events.h"
+#include "payloadManager.h"
 void MessageHandler(SKSE::MessagingInterface::Message* a_msg)
 {
 	switch (a_msg->type) {
@@ -11,6 +12,7 @@ void MessageHandler(SKSE::MessagingInterface::Message* a_msg)
 		animEventHandler::HookSink(pcPtr.address());
 		animEventHandler::HookSink(npcPtr.address());
 		INFO("Anim event hook sinked");
+		payloadManager::loadPreDefinedPayload();
 		break;
 	}
 }

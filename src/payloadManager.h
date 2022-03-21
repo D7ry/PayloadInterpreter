@@ -22,40 +22,21 @@ constexpr uint32_t operator"" _h(const char* str, size_t size) noexcept
 /*class pre-processing all payloads and filter out unwanted ones.*/
 class payloadManager
 {
+	static inline const std::string configDir = "Data/SKSE/PayloadInterpreter/Config";
 	/*Mapping of pre-defined instructions to actual tokenized instructions.*/
-	static inline robin_hood::unordered_map<std::string, std::vector<std::string>> preDefinedInstructions;
+	static inline robin_hood::unordered_map
+		<
+		std::string, //instruction name that are defined
+		std::vector<std::vector<std::string>> //vector containing all tokenized instructions that match instruction name
+		> preDefinedInstructions;
 public:
 	/*Dedicate payload to corresponding handlers.*/
-	static void preProcessPayload(RE::Actor* actor, std::vector<std::string> tokens) {
-		switch (hash(tokens[0].data(), tokens[0].size())) {
-		case "@SGVB"_h:
-			graphVariableHandler::process(actor, tokens, graphVariableHandler::GRAPHVARIABLETYPE::Bool); break;
-			break;
-		case "@SGVF"_h:
-			graphVariableHandler::process(actor, tokens, graphVariableHandler::GRAPHVARIABLETYPE::Float); break;
-		case "@SGVI"_h:
-			graphVariableHandler::process(actor, tokens, graphVariableHandler::GRAPHVARIABLETYPE::Int); break;
-		case "@CAST"_h:
-			spellCastHandler::process(actor, tokens); break;
-		case "@CAMSHAKE"_h:
-			cameraHandler::process(actor, tokens, cameraHandler::CAMOPTYPE::screenShake); break;
-		case "@SETGHOST"_h:
-			setGhostHandler::process(actor, tokens); break;
-		case "@PLAYPARTICLE"_h:
-			particleHandler::process(actor, tokens); break;
-		default:
-			payloadHandler::printErrMsg(tokens, "Invalid instruction.");
-		}
-	};
-
-	static void matchDefinedPayload(RE::Actor* actor, std::string payload) {
-		auto tokenizedPayload = preDefinedInstructions.find(payload);
-		if (tokenizedPayload != preDefinedInstructions.end()) {
-			preProcessPayload(actor, tokenizedPayload->second);
-		}
-	}
-
+	static void preProcessPayload(RE::Actor* actor, std::vector<std::string> tokens);
+	/*Try to match pre-defined payload to their definitions and process.*/
+	static void matchPreDefinedPayload(RE::Actor* actor, std::string payload);
+	/*Load pre-defined payload from .ini file.*/
+	static void loadPreDefinedPayload();
 private:
-	
+	static void readSingleIni(const char* ini_path);
 
 };
