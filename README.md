@@ -72,6 +72,7 @@ Unlike other events(e.g. weaponSwing, hitFrame), `PIE` itself does absolutely no
   - `@SGVI|(string)graph variable|(int)value `<br/>
 - cast a spell<br/>
   - `@CASTSPELL|(string)spell formID|(string).esp/.esm/.esl containing the spell|(float)effectiveness|(float)magnitude|(bool)self-targeting|(float)Health Requirement|(float)Health Cost|(float)Stamina Requirement|(float)Stamina Cost|(float)Magicka Requirement|(float)Magicka Cost`<br/>
+  - `@CAST|...` can also be used
 - set the actor to ghost(invincible). If the argument is false, "unghost" the character, and vice versa. <br/>
   - `@SETGHOST|(bool)isghost`<br/>
   - when in ghost state, the character will not get hit by anything(weapon&spell), but can hit others. 
