@@ -124,6 +124,7 @@ Having many payload instructions can clutter the annotation and making things di
 - A custom instruction can be mapped to multiple instructions. Example below.
 - .ini file should be stored in SKSE/PayloadInterpreter/Config
 - .ini file must have at least one section. Example below.
+- Do not include user-defined instruction in itself. Doing so would lead to a recursive loop that will set your pc on fire.
 
 ### Example:
 ```
@@ -146,5 +147,17 @@ $disableIframe = @SETGHOST|0
   - Because the parameters of those instructions are written in an .ini file, you can easily modify the spell costs or the .nif file being played, without re-annotating.
 - In `Convenience` section, `$enableIframe` is mapped to one native instruction `@SETGHOST|1`. While it seems unncessary as they're about the same length, this custom payload allows for better clarity.
 
+## Asynchronous operations
+Sometimes you might want to do something a little bit after the current payload time(e.g. disabling i-frame, remove actor buff/ change actor values). This can be done using asynchronous instructions. Asynchronous instructions are almost identical to native or user defined instructions, except they contain an additional argument: time.
+
+Example of an asynchronous operation:<br/>
+``![5][@SETGHOST|0]``<br/>
+What makes it different, is the two sets of `[]`, as well as the `!` in front. Everything in the second bracket is identical to the instruction - be it native or user-defined - you would like to call. The leading `!` signifies it being an asynchronous operation, and `5` in the first bracket corresponds to the wait time (before the instruction fires).
+
+- Asynchronous operations must begin with `!`
+- They also must contain two sets of brackets `[]`.
+ - The first set contains the wait time in seconds.
+ - The second set contains the actual instruction.
+- You can make either user-defined or native asynchronous. You can even have asynchrnous instructions inside user-defined instructions.
 ## DEBUG
 If you think you did everything right and nothing shows up in your game, you can look up the plugin log from `c\users\yourUserName\Documents\My Games\Skyrim Special Edition\SKSE\PayloadFramework.log`. The log will prints out precisely the errored payload.
