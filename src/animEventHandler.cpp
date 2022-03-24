@@ -8,20 +8,9 @@ RE::BSEventNotifyControl animEventHandler::HookedProcessEvent(RE::BSAnimationGra
 	if (!a_event.holder) {
 		return fn ? (this->*fn)(a_event, src) : RE::BSEventNotifyControl::kContinue;
 	}
-	if (a_event.payload.length() == 0) {//events without payload won't get processed
-		return fn ? (this->*fn)(a_event, src) : RE::BSEventNotifyControl::kContinue;
+	if (a_event.payload.length() != 0) {//events without payload won't get processed
+		payloadManager::preProcess(a_event.holder->As<RE::Actor>(), a_event.payload.data());
 	}
-	std::string payLoad = a_event.payload.data();
-	if (payLoad.at(0) == '@') { //only process valid payloads
-		//DEBUG("matched custom payload");
-		//DEBUG(payLoad);
-		payloadManager::preProcessPayload(a_event.holder->As<RE::Actor>(), Utils::tokenize(payLoad, '|'));
-	} 
-	else if (payLoad.at(0) == '$') {
-		payloadManager::matchPreDefinedPayload(a_event.holder->As<RE::Actor>(), payLoad);
-	}
-
-
 
     return fn ? (this->*fn)(a_event, src) : RE::BSEventNotifyControl::kContinue;
 }

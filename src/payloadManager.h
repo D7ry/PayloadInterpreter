@@ -27,13 +27,32 @@ class payloadManager
 	static inline robin_hood::unordered_map
 		<
 		std::string, //instruction name that are defined
-		std::vector<std::vector<std::string>> //vector containing all tokenized instructions that match instruction name
-		> preDefinedInstructions;
+		std::vector<std::string> //vector containing all instructions that matches the payload.
+		> 
+		preDefinedInstructions;
+
+	/*Task queue for async payload operations.*/
+	static inline robin_hood::unordered_map
+		<
+		RE::Actor*,
+		std::vector
+		<
+		std::pair<float, std::string>
+		>
+		>
+		asyncTaskQueue;
 public:
-	/*Dedicate payload to corresponding handlers.*/
-	static void preProcessPayload(RE::Actor* actor, std::vector<std::string> tokens);
-	/*Try to match pre-defined payload to their definitions and process.*/
-	static void matchPreDefinedPayload(RE::Actor* actor, std::string payload);
+	static inline bool hasAsyncTask; //switch for async tasking, hooked to main update.
+	static void update(); //called once per frame
+	/*preProcess different types of instructions.*/
+	static void preProcess(RE::Actor* actor, std::string a_payload);
+	/*Delegate a parsed native instruction to corresponding handlers.*/
+	static void delegateNative(RE::Actor* actor, std::string a_payload);
+	/*Try to match pre-defined payload to their pre-defined definitions in .ini and do work.*/
+	static void delegateCustom(RE::Actor* actor, std::string a_payload);
+	/*Push a async payload task.*/
+	static void delegateAsync(RE::Actor* actor, std::string a_payload);
+
 	/*Load pre-defined payload from .ini file.*/
 	static void loadPreDefinedPayload();
 private:

@@ -57,6 +57,19 @@ public:
         return output;
     }
 
+    /*Fetch brackted contents.
+    sample input: ![a_float][a_string]
+    assuming input is in correct format.*/
+    static std::pair<float, std::string> fetchBracketed(std::string in) {
+        size_t start = in.find_first_of('[');
+        size_t end = in.find_first_of(']');
+        float f = std::stof(in.substr(start, end - start));
+        start = in.find_first_of('[', start);
+        end = in.find_first_of(']', end);
+        std::string s = in.substr(start, end);
+        return std::pair{ f, s };
+    }
+
     static void SGTM(float a_in) {
         static float* g_SGTM = (float*)REL::ID(511883).address();
         *g_SGTM = a_in;

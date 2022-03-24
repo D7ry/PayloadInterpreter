@@ -1,5 +1,6 @@
 #include "events.h"
 #include "payloadManager.h"
+#include "hooks.h"
 void MessageHandler(SKSE::MessagingInterface::Message* a_msg)
 {
 	switch (a_msg->type) {
@@ -79,5 +80,6 @@ extern "C" DLLEXPORT bool SKSEAPI SKSEPlugin_Load(const SKSE::LoadInterface* a_s
 	if (!messaging->RegisterListener("SKSE", MessageHandler)) {
 		return false;
 	}
+	Hooks::install();
 	return true;
 }

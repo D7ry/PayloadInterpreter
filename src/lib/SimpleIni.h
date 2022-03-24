@@ -322,7 +322,7 @@ public:
         }
 
 #if defined(_MSC_VER) && _MSC_VER <= 1200
-        /** STL of VC6 doesn't allow me to specify my own comparator for list::sort() */
+        /** STL of VC6 doesn't allow me to specify my own comparator for list::preProcess() */
         bool operator<(const Entry & rhs) const { return LoadOrder()(*this, rhs); }
         bool operator>(const Entry & rhs) const { return LoadOrder()(rhs, *this); }
 #endif
@@ -754,8 +754,8 @@ public:
 
     /** Retrieve all section names. The list is returned as an STL vector of
         names and can be iterated or searched as necessary. Note that the
-        sort order of the returned strings is NOT DEFINED. You can sort
-        the names into the load order if desired. Search this file for ".sort"
+        preProcess order of the returned strings is NOT DEFINED. You can preProcess
+        the names into the load order if desired. Search this file for ".preProcess"
         for an example.
 
         NOTE! This structure contains only pointers to strings. The actual
@@ -770,9 +770,9 @@ public:
         TNamesDepend & a_names
         ) const;
 
-    /** Retrieve all unique key names in a section. The sort order of the
-        returned strings is NOT DEFINED. You can sort the names into the load 
-        order if desired. Search this file for ".sort" for an example. Only 
+    /** Retrieve all unique key names in a section. The preProcess order of the
+        returned strings is NOT DEFINED. You can preProcess the names into the load 
+        order if desired. Search this file for ".preProcess" for an example. Only 
         unique key names are returned.
 
         NOTE! This structure contains only pointers to strings. The actual
@@ -793,9 +793,9 @@ public:
         ) const;
 
     /** Retrieve all values for a specific key. This method can be used when
-        multiple keys are both enabled and disabled. Note that the sort order 
-        of the returned strings is NOT DEFINED. You can sort the names into 
-        the load order if desired. Search this file for ".sort" for an example.
+        multiple keys are both enabled and disabled. Note that the preProcess order 
+        of the returned strings is NOT DEFINED. You can preProcess the names into 
+        the load order if desired. Search this file for ".preProcess" for an example.
 
         NOTE! The returned values are pointers to string data stored in memory
         owned by CSimpleIni. Ensure that the CSimpleIni object is not destroyed

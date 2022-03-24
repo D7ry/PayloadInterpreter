@@ -2,7 +2,6 @@
 #include "payloadHandler.h"
 #include "offsets.h"
 inline void shakeScreen(RE::Actor* actor, std::vector<std::string> arr) {
-	DEBUG("process screen shake");
 	// 1 = cam shake strength
 	// 2 = cam shake duration
 	offsets::shakeCamera(std::stof(arr[1]), actor->GetPosition(), std::stof(arr[2]));
