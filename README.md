@@ -151,8 +151,8 @@ $disableIframe = @SETGHOST|0
 Sometimes you might want to do something a little bit after the current payload time(e.g. disabling i-frame, remove actor buff/ change actor values). This can be done using asynchronous instructions. Asynchronous instructions are almost identical to native or user defined instructions, except they contain an additional argument: time.
 
 Example of an asynchronous operation:<br/>
-``![5][@SETGHOST|0]``<br/>
-What makes it different, is the two sets of `[]`, as well as the `!` in front. Everything in the second bracket is identical to the instruction - be it native or user-defined - you would like to call. The leading `!` signifies it being an asynchronous operation, and `5` in the first bracket corresponds to the wait time (before the instruction fires).
+``![5]@SETGHOST|0``<br/>
+What makes it different, is the set of `[]`, and a `!` in the front. The leading `!` signifies it being an asynchronous operation, and `5` in the first bracket corresponds to the wait time (before the instruction fires). Nothing following needs to be changed.
 
 - Asynchronous operations must begin with `!`
 - They also must contain two sets of brackets `[]`.
