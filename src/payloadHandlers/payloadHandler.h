@@ -63,6 +63,15 @@ public:
 	static void process(RE::Actor* actor, std::vector<std::string> param);
 };
 
+/*Apply/removal of spells/mgef.*/
+class spellAddHandler : public payloadHandler {
+public:
+	enum OPERATION {
+		add = 0,
+		remove = 1
+	};
+	static void process(RE::Actor* a_actor, std::vector<std::string> v, spellAddHandler::OPERATION op);
+};
 /*Deal with screenshake&FOV changes*/
 class cameraHandler : public payloadHandler {
 public:

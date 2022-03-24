@@ -37,7 +37,7 @@ class payloadManager
 		RE::Actor*,
 		std::vector
 		<
-		std::pair<float, std::string>
+		std::pair<float, std::string> //Waiting time, unparsed instruction.
 		>
 		>
 		asyncTaskQueue;

@@ -69,6 +69,10 @@ void payloadManager::delegateNative(RE::Actor* actor, std::string a_payload) {
 	case "@CAST"_h:
 	case "@CASTSPELL"_h:
 		spellCastHandler::process(actor, tokens); break;
+	case "@APPLYSPELL"_h:
+		spellAddHandler::process(actor, tokens, spellAddHandler::OPERATION::add); break;
+	case "@UNAPPLYSPELL"_h:
+		spellAddHandler::process(actor, tokens, spellAddHandler::OPERATION::remove); break;
 	case "@CAMSHAKE"_h:
 		cameraHandler::process(actor, tokens, cameraHandler::CAMOPTYPE::screenShake); break;
 	case "@SETGHOST"_h:
@@ -76,7 +80,8 @@ void payloadManager::delegateNative(RE::Actor* actor, std::string a_payload) {
 	case "@PLAYPARTICLE"_h:
 		particleHandler::process(actor, tokens); break;
 	default:
-		payloadHandler::printErrMsg(tokens, "Invalid instruction.");
+		break;
+		//payloadHandler::printErrMsg(tokens, "Invalid instruction.");
 	}
 };
 
@@ -96,11 +101,11 @@ void payloadManager::delegateAsync(RE::Actor* actor, std::string a_payload) {
 	//![Time]Actual_Payload
 	DEBUG("processing async payload: " + a_payload);
 	size_t start = a_payload.find_first_of('[');
-	if (start == std::string::npos) {
+	size_t end = a_payload.find_first_of(']');
+	if (start == std::string::npos
+		|| end == std::string::npos) {
 		INFO("Error: invalid payload input: " + a_payload);
 	}
-	size_t end = a_payload.find_first_of(']');
-	DEBUG("findgin time");
 	float a_time = std::stof(a_payload.substr(start + 1, end - start - 1));
 	DEBUG("time: {}", a_time);
 	std::string a_instruction = a_payload.substr(end + 1);
