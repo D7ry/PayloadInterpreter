@@ -73,6 +73,10 @@ Unlike other events(e.g. weaponSwing, hitFrame), `PIE` itself does absolutely no
 - cast a spell<br/>
   - `@CASTSPELL|(string)spell formID|(string).esp/.esm/.esl containing the spell|(float)effectiveness|(float)magnitude|(bool)self-targeting|(float)Health Requirement|(float)Health Cost|(float)Stamina Requirement|(float)Stamina Cost|(float)Magicka Requirement|(float)Magicka Cost`<br/>
   - `@CAST|...` can also be used
+- Apply a spell and its magic effect onto the actor instantly. Spell may stay on actor.
+  - `@APPLYSPELL|(string)spell formID|(string).esp/.esm/.esl containing the spell`
+- Remove a spell's effect from the actor.
+  - `@UNAPPLYSPELL|(string) spell formID|(string.esp/.esm/.esl containing the spell`
 - set the actor to ghost(invincible). If the argument is false, "unghost" the character, and vice versa. <br/>
   - `@SETGHOST|(bool)isghost`<br/>
   - when in ghost state, the character will not get hit by anything(weapon&spell), but can hit others. 
@@ -124,6 +128,7 @@ Having many payload instructions can clutter the annotation and making things di
 - A custom instruction can be mapped to multiple instructions. Example below.
 - .ini file should be stored in SKSE/PayloadInterpreter/Config
 - .ini file must have at least one section. Example below.
+- Do not include user-defined instruction in itself. Doing so would lead to a recursive loop that will set your pc on fire.
 
 ### Example:
 ```
@@ -141,10 +146,22 @@ $enableIframe = @SETGHOST|1
 $disableIframe = @SETGHOST|0
 ```
 - The above case consists of two sections: `WeaponArt` and `Convenience`. There are no specific rule for section grouping/naming, organize as you wish, but make sure to have at least one section.
-- In `WeaponArt` section, `$swordFlame ` is a custom instruction that is mapped to three native instructions. 
+- In `WeaponArt` section, `$swordFlame` is a custom instruction mapped to three native instructions:`@CAST`, `@CAMSHAKE`, and `@PLAYPARTICLE`
   - In other words, if you attach `$swordFlame` to `weaponSwing`, when you swing your weapon, your camera shakes, a particle effect is played in front of you, and you cast a firebolt spell.
   - Because the parameters of those instructions are written in an .ini file, you can easily modify the spell costs or the .nif file being played, without re-annotating.
 - In `Convenience` section, `$enableIframe` is mapped to one native instruction `@SETGHOST|1`. While it seems unncessary as they're about the same length, this custom payload allows for better clarity.
 
+## Asynchronous operations
+Sometimes you might want to do something a little bit after the current payload time(e.g. disabling i-frame, remove actor buff/ change actor values). This can be done using asynchronous instructions. Asynchronous instructions are almost identical to native or user defined instructions, except they contain an additional argument: time.
+
+Example of an asynchronous operation:<br/>
+``![5]@SETGHOST|0``<br/>
+What makes it different, is the set of `[]`, and a `!` in the front. The leading `!` signifies it being an asynchronous operation, and `5` in the first bracket corresponds to the wait time (before the instruction fires). Nothing following needs to be changed.
+
+- Asynchronous operations must begin with `!`
+- They also must contain two sets of brackets `[]`.
+ - The first set contains the wait time in seconds.
+ - The second set contains the actual instruction.
+- You can make either user-defined or native asynchronous. You can even have asynchrnous instructions inside user-defined instructions.
 ## DEBUG
 If you think you did everything right and nothing shows up in your game, you can look up the plugin log from `c\users\yourUserName\Documents\My Games\Skyrim Special Edition\SKSE\PayloadFramework.log`. The log will prints out precisely the errored payload.
