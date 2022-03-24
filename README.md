@@ -73,6 +73,10 @@ Unlike other events(e.g. weaponSwing, hitFrame), `PIE` itself does absolutely no
 - cast a spell<br/>
   - `@CASTSPELL|(string)spell formID|(string).esp/.esm/.esl containing the spell|(float)effectiveness|(float)magnitude|(bool)self-targeting|(float)Health Requirement|(float)Health Cost|(float)Stamina Requirement|(float)Stamina Cost|(float)Magicka Requirement|(float)Magicka Cost`<br/>
   - `@CAST|...` can also be used
+- Apply a spell and its magic effect onto the actor instantly. Spell may stay on actor.
+  - `@APPLYSPEL|(string)spell formID|(string).esp/.esm/.esl containing the spell`
+- Remove a spell's effect from the actor.
+  - `@UNAPPLYSPELL|(string) spell formID|(string.esp/.esm/.esl containing the spell`
 - set the actor to ghost(invincible). If the argument is false, "unghost" the character, and vice versa. <br/>
   - `@SETGHOST|(bool)isghost`<br/>
   - when in ghost state, the character will not get hit by anything(weapon&spell), but can hit others. 
