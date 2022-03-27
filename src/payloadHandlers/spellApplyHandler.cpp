@@ -1,5 +1,5 @@
 #include "payloadHandlers/payloadHandler.h"
-void spellAddHandler::process(RE::Actor* a_actor, std::vector<std::string> v, spellAddHandler::OPERATION op) {
+void spellApplyHandler::process(RE::Actor* a_actor, std::vector<std::string> v, spellApplyHandler::OPERATION op) {
 	//@ADDSPELL|FormID|.esp
 	if (checkParamCt(v, 2)) {
 		return;
