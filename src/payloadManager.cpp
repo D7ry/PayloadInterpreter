@@ -3,7 +3,7 @@
 #include "offsets.h"
 void payloadManager::update() {
 	if (asyncTaskQueue.size() == 0) {
-		DEBUG("async queue empty, turning off update");
+		//DEBUG("async queue empty, turning off update");
 		hasAsyncTask = false; //flip switch if no more async task.
 		return;
 	}
@@ -11,7 +11,7 @@ void payloadManager::update() {
 	auto it_actor = asyncTaskQueue.begin(); //iterator for the queue
 	while (it_actor != asyncTaskQueue.end()) {
 		if (it_actor->second.size() == 0) {// actor has no more queued task
-			DEBUG("{} has no more async task, erasing actor!", it_actor->first->GetName());
+			//DEBUG("{} has no more async task, erasing actor!", it_actor->first->GetName());
 			it_actor = asyncTaskQueue.erase(it_actor);
 			continue;
 		}
@@ -20,7 +20,7 @@ void payloadManager::update() {
 		auto it_task = it_actor->second.begin();//iterator for all tasks of a single actor.
 		while (it_task != it_actor->second.end()) {
 			if (it_task->first <= 0) {
-				DEBUG("Initiating task: ", it_task->second);
+				//DEBUG("Initiating task: ", it_task->second);
 				//submit this single task.
 				const auto task = SKSE::GetTaskInterface();
 				if (task != nullptr) {
@@ -70,9 +70,9 @@ void payloadManager::delegateNative(RE::Actor* actor, std::string a_payload) {
 	case "@CASTSPELL"_h:
 		spellCastHandler::process(actor, tokens); break;
 	case "@APPLYSPELL"_h:
-		spellAddHandler::process(actor, tokens, spellAddHandler::OPERATION::add); break;
+		spellApplyHandler::process(actor, tokens, spellApplyHandler::OPERATION::add); break;
 	case "@UNAPPLYSPELL"_h:
-		spellAddHandler::process(actor, tokens, spellAddHandler::OPERATION::remove); break;
+		spellApplyHandler::process(actor, tokens, spellApplyHandler::OPERATION::remove); break;
 	case "@CAMSHAKE"_h:
 		cameraHandler::process(actor, tokens, cameraHandler::CAMOPTYPE::screenShake); break;
 	case "@SETGHOST"_h:
@@ -107,12 +107,12 @@ void payloadManager::delegateAsync(RE::Actor* actor, std::string a_payload) {
 		INFO("Error: invalid payload input: " + a_payload);
 	}
 	float a_time = std::stof(a_payload.substr(start + 1, end - start - 1));
-	DEBUG("time: {}", a_time);
+	//DEBUG("time: {}", a_time);
 	std::string a_instruction = a_payload.substr(end + 1);
-	DEBUG("instruction: {}", a_instruction);
+	//DEBUG("instruction: {}", a_instruction);
 	auto it = asyncTaskQueue.find(actor);
 	if (it != asyncTaskQueue.end()) { //actor has other async tasks
-		DEBUG("initializing async task");
+		//DEBUG("initializing async task");
 		it->second.push_back(std::pair<float, std::string>{a_time, a_instruction});
 	}
 	else { //actor only has one async task
@@ -124,7 +124,7 @@ void payloadManager::delegateAsync(RE::Actor* actor, std::string a_payload) {
 		);
 	}
 	hasAsyncTask = true; //flip the switch
-	DEBUG("finished porcessing");
+	//DEBUG("finished porcessing");
 }
 
 #pragma region data
