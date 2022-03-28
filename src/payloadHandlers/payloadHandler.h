@@ -64,13 +64,26 @@ public:
 };
 
 /*Apply/removal of spells/mgef.*/
-class spellAddHandler : public payloadHandler {
+class spellApplyHandler : public payloadHandler {
 public:
 	enum OPERATION {
 		add = 0,
 		remove = 1
 	};
-	static void process(RE::Actor* a_actor, std::vector<std::string> v, spellAddHandler::OPERATION op);
+	static void process(RE::Actor* a_actor, std::vector<std::string> v, spellApplyHandler::OPERATION op);
+};
+
+class SPIDHandler : public payloadHandler {
+public:
+	enum OBJECTTYPE {
+		spell = 0,
+		perk,
+		item
+	};
+	enum OPERATION {
+		add = 0,
+		remove = 1
+	};
 };
 /*Deal with screenshake&FOV changes*/
 class cameraHandler : public payloadHandler {
@@ -89,11 +102,6 @@ public:
 	static void process(RE::Actor* actor, std::vector<std::string> param);
 };
 
-/*add and remove magic effects*/
-class mgefHandler : public payloadHandler {
-public:
-	static void process(RE::Actor* actor, std::vector<std::string> v);
-};
 
 /*Apply .nif effects*/
 class particleHandler : public payloadHandler {
