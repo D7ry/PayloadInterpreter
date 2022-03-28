@@ -36,7 +36,7 @@ class Hook_PlayerUpdate
 public:
 	static void install() {
 #if ANNIVERSARY_EDITION
-		REL::Relocation<std::uintptr_t> PlayerCharacterVtbl{ REL::ID{208040} };
+		REL::Relocation<std::uintptr_t> PlayerCharacterVtbl{ RE::VTABLE_PlayerCharacter[0] };
 #else
 		REL::Relocation<std::uintptr_t> PlayerCharacterVtbl{ RE::Offset::PlayerCharacter::Vtbl };
 		
@@ -47,7 +47,7 @@ public:
 private:
 	
 	static void Update(RE::PlayerCharacter* a_this, float a_delta) {
-		DEBUG("PLAYER update");
+		//DEBUG("PLAYER update");
 		if (payloadManager::hasAsyncTask) {
 			payloadManager::update();
 		}
