@@ -51,7 +51,7 @@ void payloadManager::preProcess(RE::Actor* actor, std::string a_payload) {
 	case '@': payloadManager::delegateNative(actor, a_payload); break;
 	case '$': payloadManager::delegateCustom(actor, a_payload); break;
 	case '!': payloadManager::delegateAsync(actor, a_payload); break;
-	default: INFO("Error: invalid payload tag: ", a_payload); break;
+	//default: INFO("Error: invalid payload tag: ", a_payload); break;
 	}
 }
 
