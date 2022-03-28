@@ -1,15 +1,19 @@
 #include "events.h"
 #include "payloadManager.h"
 #include "hooks.h"
+#include "Version.h"
 void MessageHandler(SKSE::MessagingInterface::Message* a_msg)
 {
 	switch (a_msg->type) {
 	case SKSE::MessagingInterface::kDataLoaded:
-		//dataHandler::testInsertWeaponArt();
-		//((animEventHandler*)((uintptr_t)RE::PlayerCharacter::GetSingleton() + 0x30))->HookSink();
 		INFO("Hooksink anim events...");
-		REL::Relocation<uintptr_t> npcPtr{ REL::ID(261399) };
-		REL::Relocation<uintptr_t> pcPtr{ REL::ID(261918) };
+#if ANNIVERSARY_EDITION
+		REL::Relocation<uintptr_t> npcPtr{ REL::ID(207890) }; //1753FE0
+		REL::Relocation<uintptr_t> pcPtr{ REL::ID(208044) };  //175A448
+#else
+		REL::Relocation<uintptr_t> npcPtr{ REL::ID(261399) }; //165e3b0
+		REL::Relocation<uintptr_t> pcPtr{ REL::ID(261918) }; //1663f78
+#endif
 		animEventHandler::HookSink(pcPtr.address());
 		animEventHandler::HookSink(npcPtr.address());
 		INFO("Anim event hook sinked");

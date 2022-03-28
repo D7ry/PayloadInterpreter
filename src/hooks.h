@@ -21,6 +21,7 @@ public:
 
 private:
 	static void Update(RE::Main* a_this, float a2) {
+		DEBUG("update");
 		if (payloadManager::hasAsyncTask) {
 			payloadManager::update();
 		}
@@ -34,13 +35,19 @@ class Hook_PlayerUpdate
 {
 public:
 	static void install() {
+#if ANNIVERSARY_EDITION
+		REL::Relocation<std::uintptr_t> PlayerCharacterVtbl{ REL::ID{208040} };
+#else
 		REL::Relocation<std::uintptr_t> PlayerCharacterVtbl{ RE::Offset::PlayerCharacter::Vtbl };
+		
+#endif
 		_Update = PlayerCharacterVtbl.write_vfunc(0xAD, Update);
 		INFO("Player update hook installed");
 	}
 private:
 	
 	static void Update(RE::PlayerCharacter* a_this, float a_delta) {
+		DEBUG("PLAYER update");
 		if (payloadManager::hasAsyncTask) {
 			payloadManager::update();
 		}
