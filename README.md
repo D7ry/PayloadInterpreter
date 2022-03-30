@@ -163,5 +163,6 @@ What makes it different, is the set of `[]`, and a `!` in the front. The leading
  - The brackets contains the wait time of this instruction.
  - immediately following the brackets is the actual instruction
 - You can make either user-defined or native asynchronous. You can even have asynchrnous instructions inside user-defined instructions.
+- For example: ``![5]@SETGHOST|0`` translates to "unghost me 5 seconds later".
 ## DEBUG
 If you think you did everything right and nothing shows up in your game, you can look up the plugin log from `c\users\yourUserName\Documents\My Games\Skyrim Special Edition\SKSE\PayloadFramework.log`. The log will prints out precisely the errored payload.
