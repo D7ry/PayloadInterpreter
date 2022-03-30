@@ -159,9 +159,9 @@ Example of an asynchronous operation:<br/>
 What makes it different, is the set of `[]`, and a `!` in the front. The leading `!` signifies it being an asynchronous operation, and `5` in the first bracket corresponds to the wait time (before the instruction fires). Nothing following needs to be changed.
 
 - Asynchronous operations must begin with `!`
-- They also must contain two sets of brackets `[]`.
- - The first set contains the wait time in seconds.
- - The second set contains the actual instruction.
+- They also must contain a set of brackets `[]` immediately following `!`
+ - The brackets contains the wait time of this instruction.
+ - immediately following the brackets is the actual instruction
 - You can make either user-defined or native asynchronous. You can even have asynchrnous instructions inside user-defined instructions.
 ## DEBUG
 If you think you did everything right and nothing shows up in your game, you can look up the plugin log from `c\users\yourUserName\Documents\My Games\Skyrim Special Edition\SKSE\PayloadFramework.log`. The log will prints out precisely the errored payload.
