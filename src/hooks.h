@@ -1,6 +1,6 @@
 #pragma once
 #include "payloadManager.h"
-
+/*
 class Hook_MainUpdate
 {
 public:
@@ -29,9 +29,9 @@ private:
 	}
 	static inline REL::Relocation<decltype(Update)> _Update;
 
-};
+};*/
 
-class Hook_PlayerUpdate
+/*class Hook_PlayerUpdate
 {
 public:
 	static void install() {
@@ -54,13 +54,13 @@ private:
 		_Update(a_this, a_delta);
 	}
 	static inline REL::Relocation<decltype(Update)> _Update;
-};
+};*/
 class Hooks {
 public:
 
 	static void install() {
 		SKSE::AllocTrampoline(1 << 4);
 		//Hook_MainUpdate::install();
-		Hook_PlayerUpdate::install();
+		//Hook_PlayerUpdate::install();
 	}
 };

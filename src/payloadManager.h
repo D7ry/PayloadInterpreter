@@ -31,19 +31,8 @@ class payloadManager
 		> 
 		preDefinedInstructions;
 
-	/*Task queue for async payload operations.*/
-	static inline robin_hood::unordered_map
-		<
-		RE::Actor*,
-		std::vector
-		<
-		std::pair<float, std::string> //Waiting time, unparsed instruction.
-		>
-		>
-		asyncTaskQueue;
 public:
-	static inline bool hasAsyncTask; //switch for async tasking, hooked to main update.
-	static void update(); //called once per frame
+	//static void update(); //called once per frame
 	/*preProcess different types of instructions.*/
 	static void preProcess(RE::Actor* actor, std::string a_payload);
 	/*Delegate a parsed native instruction to corresponding handlers.*/
@@ -52,7 +41,9 @@ public:
 	static void delegateCustom(RE::Actor* actor, std::string a_payload);
 	/*Push a async payload task.*/
 	static void delegateAsync(RE::Actor* actor, std::string a_payload);
-
+	/*Function run in an async thread.
+	@param time: time until the payload instruction fires.*/
+	static void asyncThreadFunc(float time, RE::Actor* actor, std::string a_payload);
 	/*Load pre-defined payload from .ini file.*/
 	static void loadPreDefinedPayload();
 private:

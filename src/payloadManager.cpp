@@ -1,6 +1,7 @@
 #include "payloadManager.h"
 #include "SimpleIni.h"
 #include "offsets.h"
+/*
 void payloadManager::update() {
 	if (asyncTaskQueue.size() == 0) {
 		//DEBUG("async queue empty, turning off update");
@@ -44,7 +45,7 @@ void payloadManager::update() {
 #pragma endregion
 		it_actor++;
 	}
-}
+}*/
 void payloadManager::preProcess(RE::Actor* actor, std::string a_payload) {
 	DEBUG(a_payload);
 	switch (a_payload.at(0)) {
@@ -97,6 +98,7 @@ void payloadManager::delegateCustom(RE::Actor* actor, std::string payload) {
 	}
 }
 
+/*
 void payloadManager::delegateAsync(RE::Actor* actor, std::string a_payload) {
 	//![Time]Actual_Payload
 	DEBUG("processing async payload: " + a_payload);
@@ -109,6 +111,8 @@ void payloadManager::delegateAsync(RE::Actor* actor, std::string a_payload) {
 	float a_time = std::stof(a_payload.substr(start + 1, end - start - 1));
 	//DEBUG("time: {}", a_time);
 	std::string a_instruction = a_payload.substr(end + 1);
+	std::jthread a_thread;
+
 	//DEBUG("instruction: {}", a_instruction);
 	auto it = asyncTaskQueue.find(actor);
 	if (it != asyncTaskQueue.end()) { //actor has other async tasks
@@ -125,8 +129,34 @@ void payloadManager::delegateAsync(RE::Actor* actor, std::string a_payload) {
 	}
 	hasAsyncTask = true; //flip the switch
 	//DEBUG("finished porcessing");
+}*/
+void payloadManager::delegateAsync(RE::Actor* actor, std::string a_payload) {
+	//![Time]Actual_Payload
+	DEBUG("processing async payload: " + a_payload);
+	size_t start = a_payload.find_first_of('[');
+	size_t end = a_payload.find_first_of(']');
+	if (start == std::string::npos
+		|| end == std::string::npos) {
+		INFO("Error: invalid payload input: " + a_payload);
+	}
+	float a_time = std::stof(a_payload.substr(start + 1, end - start - 1));
+	//DEBUG("time: {}", a_time);
+	std::string a_instruction = a_payload.substr(end + 1);
+	std::jthread a_thread(asyncThreadFunc, a_time, actor, a_payload);
+	a_thread.detach();
 }
-
+void payloadManager::asyncThreadFunc(float time, RE::Actor* a_actor, std::string a_payload) {
+	std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(time * 1000)));
+	const auto task = SKSE::GetTaskInterface();
+	if (task != nullptr) {
+		if (a_actor && a_actor->currentProcess //actor must be in high process
+			&& a_actor->currentProcess->InHighProcess()) {
+			task->AddTask([a_actor, a_payload]() {
+				preProcess(a_actor, a_payload);
+				});
+		}
+	}
+}
 #pragma region data
 /*Read everything from a single ini.*/
 void payloadManager::readSingleIni(const char* ini_path) {
