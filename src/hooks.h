@@ -59,7 +59,7 @@ class Hooks {
 public:
 
 	static void install() {
-		SKSE::AllocTrampoline(1 << 5);
+		SKSE::AllocTrampoline(1 << 4);
 		//Hook_MainUpdate::install();
 		Hook_PlayerUpdate::install();
 	}
