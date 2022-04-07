@@ -143,7 +143,7 @@ void payloadManager::readSingleIni(const char* ini_path) {
 		ini.GetAllKeys(a_section, keys);
 		for (CSimpleIniA::TNamesDepend::iterator s_it1 = keys.begin(); s_it1 != keys.end(); s_it1++) { //iterate through a section's all keys
 			const char* a_key = s_it1->pItem; 
-			INFO("Loading payload mapping for key: {}", a_key);
+			INFO("Loading payload mapping for key {} :", a_key);
 			if (a_key[0] == '$') {
 				std::list<CSimpleIniA::Entry> ls;
 				if (ini.GetAllValues(a_section, a_key, ls)
@@ -157,7 +157,7 @@ void payloadManager::readSingleIni(const char* ini_path) {
 						else {
 							it->second.push_back(a_instruction);
 						}
-						INFO("mapped to instruction: {}", a_instruction);
+						INFO(a_instruction);
 					}
 				}
 			}
@@ -169,12 +169,15 @@ void payloadManager::readSingleIni(const char* ini_path) {
 }
 void payloadManager::loadPreDefinedPayload() {
 	INFO("Loading predefined payload instructions...");
-	for (const auto& entry : std::filesystem::directory_iterator(configDir)) { //iterates through all .ini files
-		std::string pathStr = entry.path().string();
-		INFO("Loading from {}", pathStr);
-		const char* cstr = pathStr.c_str();
-		readSingleIni(cstr);
+	if (std::filesystem::is_directory(configDir)) {
+		for (const auto& entry : std::filesystem::directory_iterator(configDir)) { //iterates through all .ini files
+			std::string pathStr = entry.path().string();
+			INFO("Loading from {}", pathStr);
+			const char* cstr = pathStr.c_str();
+			readSingleIni(cstr);
+		}
 	}
+
 	INFO("Predefined instructions loaded.");
 }
 #pragma endregion
