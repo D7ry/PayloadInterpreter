@@ -1,7 +1,7 @@
 #include "payloadHandlers/payloadHandler.h"
 void spellApplyHandler::process(RE::Actor* a_actor, std::vector<std::string> v, spellApplyHandler::OPERATION op) {
 	//@ADDSPELL|FormID|.esp
-	if (checkParamCt(v, 2)) {
+	if (!checkParamCt(v, 2)) {
 		return;
 	}
 	int spellForm = 0;
@@ -18,8 +18,8 @@ void spellApplyHandler::process(RE::Actor* a_actor, std::vector<std::string> v, 
 	}
 
 	switch (op) {
-	case OPERATION::add:a_actor->AddSpell(spell);
-	case OPERATION::remove:a_actor->RemoveSpell(spell);
+	case OPERATION::add:a_actor->AddSpell(spell); break;
+	case OPERATION::remove:a_actor->RemoveSpell(spell); break;
 	}
 	
 }
