@@ -1,15 +1,12 @@
 {
-    "name":  "payloadframework",
-    "version-string":  "1.0.0",
-    "description":  "",
-    "license":  "MIT",
-    "dependencies":  [
-                         "spdlog",
-                         "boost-regex"
-                     ],
-    "features":  {
-                     "mo2-install":  {
-                                         "description":  "PayloadFramework"
-                                     }
-                 }
+  "name": "payloadinterpreter",
+  "version": "1",
+  "dependencies": [
+    "fast-cpp-csv-parser",
+    "rsm-binary-io",
+    "simpleini",
+    "spdlog",
+    "xbyak",
+    "rapidcsv"
+  ]
 }

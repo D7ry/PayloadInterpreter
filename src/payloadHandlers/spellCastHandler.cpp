@@ -49,8 +49,8 @@ void spellCastHandler::process(RE::Actor* actor, std::vector<std::string> arr){
 	}
 
 	//Cast the spell
-	actor->GetMagicCaster(RE::MagicSystem::CastingSource::kInstant)
-		->InstantCast(spell, false, target, std::stof(arr[3]), false, std::stof(arr[4]), actor);
+	actor->GetMagicCaster(RE::MagicSystem::CastingSource::kInstant)->
+		CastSpellImmediate(spell, false, target, std::stof(arr[3]), false, std::stof(arr[4]), actor);
 
 	//Damage actor value
 	spell->CalculateMagickaCost(actor);

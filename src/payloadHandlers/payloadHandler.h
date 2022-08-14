@@ -16,7 +16,7 @@ public:
 			org += *i++;
 			for (; i != e; ++i) org.append("|").append(*i);
 		};
-		INFO("Error: " + errMsg + " "
+		logger::info("Error: " + errMsg + " "
 			+ "Errored instruction: " + org);
 	}
 	/*check if the amount of parameter in the vector is correct, ignoring the instruction. If not, prints an error message.

@@ -1,4 +1,6 @@
 #pragma once
-struct settings
+class settings
 {
+	static inline bool bWarnAgainstInvalidConfigs = true;
+	static inline bool bWarnAgainstInvalidPayloads = true;
 };

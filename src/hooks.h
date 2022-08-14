@@ -1,66 +1,49 @@
 #pragma once
 #include "payloadManager.h"
-/*
-class Hook_MainUpdate
+namespace Hook
 {
-public:
+	class hook_animationEvent
+	{
+	public:
+		static void install()
+		{
+			logger::info("Installing animation event hook...");
+			REL::Relocation<uintptr_t> AnimEventVtbl_NPC{ RE::VTABLE_Character[2] };
+			REL::Relocation<uintptr_t> AnimEventVtbl_PC{ RE::VTABLE_PlayerCharacter[2] };
 
-	static void install() {
-		auto& trampoline = SKSE::GetTrampoline();
-#if ANNIVERSARY_EDITION
-		REL::Relocation<uintptr_t> hook{ REL::ID(36544) };  // 5D29F0, main loop
-		_Update = trampoline.write_call<5>(hook.address() + 0x160, Update);
-#else
-		REL::Relocation<uintptr_t> hook{ REL::ID(35551) };  // 5AF3D0, main loop
-		_Update = trampoline.write_call<5>(hook.address() + 0x11F, Update);
-#endif
-
-		
-		INFO("Main Update hook installed.");
-	}
-
-private:
-	static void Update(RE::Main* a_this, float a2) {
-		DEBUG("update");
-		if (payloadManager::hasAsyncTask) {
-			payloadManager::update();
+			_ProcessEvent_NPC = AnimEventVtbl_NPC.write_vfunc(0x1, ProcessEvent_NPC);
+			_ProcessEvent_PC = AnimEventVtbl_PC.write_vfunc(0x1, ProcessEvent_PC);
 		}
-		_Update(a_this, a2);
-	}
-	static inline REL::Relocation<decltype(Update)> _Update;
 
-};*/
+	private:
+		static inline void ProcessEvent(RE::BSTEventSink<RE::BSAnimationGraphEvent>* a_sink, RE::BSAnimationGraphEvent* a_event, RE::BSTEventSource<RE::BSAnimationGraphEvent>* a_eventSource) 
+		{
+			if (a_event->tag != "PIE") {
+				return;
+			}
+			RE::TESObjectREFR* holder = const_cast<RE::TESObjectREFR*>(a_event->holder);
 
-/*class Hook_PlayerUpdate
-{
-public:
-	static void install() {
-#if ANNIVERSARY_EDITION
-		REL::Relocation<std::uintptr_t> PlayerCharacterVtbl{ RE::VTABLE_PlayerCharacter[0] };
-#else
-		REL::Relocation<std::uintptr_t> PlayerCharacterVtbl{ RE::Offset::PlayerCharacter::Vtbl };
-		
-#endif
-		_Update = PlayerCharacterVtbl.write_vfunc(0xAD, Update);
-		INFO("Player update hook installed");
-	}
-private:
+			if (!holder) {
+				return;
+			}
+
+			payloadManager::preProcess(holder->As<RE::Actor>(), a_event->payload.data());
+
+		}
+		using EventResult = RE::BSEventNotifyControl;
+		static EventResult ProcessEvent_NPC(RE::BSTEventSink<RE::BSAnimationGraphEvent>* a_sink, RE::BSAnimationGraphEvent* a_event, RE::BSTEventSource<RE::BSAnimationGraphEvent>* a_eventSource) 
+		{
+			ProcessEvent(a_sink, a_event, a_eventSource);
+			return _ProcessEvent_NPC(a_sink, a_event, a_eventSource);
+		}
+		static EventResult ProcessEvent_PC(RE::BSTEventSink<RE::BSAnimationGraphEvent>* a_sink, RE::BSAnimationGraphEvent* a_event, RE::BSTEventSource<RE::BSAnimationGraphEvent>* a_eventSource) 
+		{
+			ProcessEvent(a_sink, a_event, a_eventSource);
+			return _ProcessEvent_PC(a_sink, a_event, a_eventSource);
+		}
+
+		static inline REL::Relocation<decltype(ProcessEvent_NPC)> _ProcessEvent_NPC;
+		static inline REL::Relocation<decltype(ProcessEvent_NPC)> _ProcessEvent_PC;
+	};
 	
-	static void Update(RE::PlayerCharacter* a_this, float a_delta) {
-		//DEBUG("PLAYER update");
-		if (payloadManager::hasAsyncTask) {
-			payloadManager::update();
-		}
-		_Update(a_this, a_delta);
-	}
-	static inline REL::Relocation<decltype(Update)> _Update;
-};*/
-class Hooks {
-public:
-
-	static void install() {
-		SKSE::AllocTrampoline(1 << 4);
-		//Hook_MainUpdate::install();
-		//Hook_PlayerUpdate::install();
-	}
-};
+}

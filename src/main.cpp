@@ -1,12 +1,11 @@
 #include "events.h"
 #include "payloadManager.h"
 #include "hooks.h"
-#include "Version.h"
 void MessageHandler(SKSE::MessagingInterface::Message* a_msg)
 {
 	switch (a_msg->type) {
 	case SKSE::MessagingInterface::kDataLoaded:
-		INFO("Hooksink anim events...");
+		logger::info("Data loaded.");
 #if ANNIVERSARY_EDITION
 		REL::Relocation<uintptr_t> npcPtr{ REL::ID(207890) }; //1753FE0
 		REL::Relocation<uintptr_t> pcPtr{ REL::ID(208044) };  //175A448
@@ -21,69 +20,108 @@ void MessageHandler(SKSE::MessagingInterface::Message* a_msg)
 		break;
 	}
 }
-#if ANNIVERSARY_EDITION
 
-extern "C" DLLEXPORT constinit auto SKSEPlugin_Version = []()
+
+void onSKSEInit()
 {
-	SKSE::PluginVersionData data{};
 
-	data.PluginVersion(Version::MAJOR);
-	data.PluginName(Version::NAME);
-	data.AuthorName("dTry"sv);
+}
 
-	data.CompatibleVersions({ SKSE::RUNTIME_LATEST });
-	data.UsesAddressLibrary(true);
-
-	return data;
-}();
-
+namespace
+{
+	void InitializeLog()
+	{
+#ifndef NDEBUG
+		auto sink = std::make_shared<spdlog::sinks::msvc_sink_mt>();
 #else
+		auto path = logger::log_directory();
+		if (!path) {
+			util::report_and_fail("Failed to find standard logging directory"sv);
+		}
+
+		*path /= fmt::format("{}.log"sv, Plugin::NAME);
+		auto sink = std::make_shared<spdlog::sinks::basic_file_sink_mt>(path->string(), true);
+#endif
+
+#ifndef NDEBUG
+		const auto level = spdlog::level::trace;
+#else
+		const auto level = spdlog::level::info;
+#endif
+
+		auto log = std::make_shared<spdlog::logger>("global log"s, std::move(sink));
+		log->set_level(level);
+		log->flush_on(level);
+
+		spdlog::set_default_logger(std::move(log));
+		spdlog::set_pattern("%g(%#): [%^%l%$] %v"s);
+	}
+}
+
+std::string wstring2string(const std::wstring& wstr, UINT CodePage)
+
+{
+	std::string ret;
+
+	int len = WideCharToMultiByte(CodePage, 0, wstr.c_str(), (int)wstr.size(), NULL, 0, NULL, NULL);
+
+	ret.resize((size_t)len, 0);
+
+	WideCharToMultiByte(CodePage, 0, wstr.c_str(), (int)wstr.size(), &ret[0], len, NULL, NULL);
+
+	return ret;
+}
 
 extern "C" DLLEXPORT bool SKSEAPI SKSEPlugin_Query(const SKSE::QueryInterface* a_skse, SKSE::PluginInfo* a_info)
 {
-	DKUtil::Logger::Init(Version::PROJECT, Version::NAME);
-
 	a_info->infoVersion = SKSE::PluginInfo::kVersion;
-	a_info->name = Version::PROJECT.data();
-	a_info->version = Version::MAJOR;
+	a_info->name = Plugin::NAME.data();
+	a_info->version = Plugin::VERSION[0];
 
 	if (a_skse->IsEditor()) {
-		ERROR("Loaded in editor, marking as incompatible"sv);
+		logger::critical("Loaded in editor, marking as incompatible"sv);
 		return false;
 	}
 
 	const auto ver = a_skse->RuntimeVersion();
-	if (ver < SKSE::RUNTIME_1_5_39) {
-		ERROR("Unable to load this plugin, incompatible runtime version!\nExpected: Newer than 1-5-39-0 (A.K.A Special Edition)\nDetected: {}", ver.string());
+	if (ver < SKSE::RUNTIME_SSE_1_5_39) {
+		logger::critical(FMT_STRING("Unsupported runtime version {}"), ver.string());
 		return false;
 	}
 
 	return true;
 }
 
-#endif
+extern "C" DLLEXPORT constinit auto SKSEPlugin_Version = []() {
+	SKSE::PluginVersionData v;
 
+	v.PluginVersion(Plugin::VERSION);
+	v.PluginName(Plugin::NAME);
+
+	v.UsesAddressLibrary(true);
+	v.CompatibleVersions({ SKSE::RUNTIME_SSE_LATEST });
+
+	return v;
+}();
 
 extern "C" DLLEXPORT bool SKSEAPI SKSEPlugin_Load(const SKSE::LoadInterface* a_skse)
 {
-#if ANNIVERSARY_EDITION
-
-	DKUtil::Logger::Init(Version::PROJECT, Version::NAME);
-
-	if (REL::Module::get().version() < SKSE::RUNTIME_1_6_317) {
-		ERROR("Unable to load this plugin, incompatible runtime version!\nExpected: Newer than 1-6-317-0 (A.K.A Anniversary Edition)\nDetected: {}", REL::Module::get().version().string());
-		return false;
-	}
-
+#ifndef NDEBUG
+	while (!IsDebuggerPresent()) { Sleep(100); }
 #endif
+	REL::Module::reset();  // Clib-NG bug workaround
 
-	INFO("{} v{} loaded", Version::PROJECT, Version::NAME);
+	InitializeLog();
+	logger::info("{} v{}"sv, Plugin::NAME, Plugin::VERSION.string());
 
 	SKSE::Init(a_skse);
+
 	auto messaging = SKSE::GetMessagingInterface();
 	if (!messaging->RegisterListener("SKSE", MessageHandler)) {
 		return false;
 	}
-	//Hooks::install();
+
+	onSKSEInit();
+
 	return true;
 }
