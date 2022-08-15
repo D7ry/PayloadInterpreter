@@ -28,6 +28,10 @@ public:
 private:
 	static void readSingleIni(const char* ini_path);
 
+	/// <summary>
+	/// Write log to the logs file regarding the actors current animation.
+	/// </summary>
+	/// <param name="a_actor"></param>
 	static void logCurrentAnim(RE::Actor* a_actor);
 
 };

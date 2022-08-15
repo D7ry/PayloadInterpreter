@@ -40,17 +40,16 @@ void particleHandler::process(RE::Actor* actor, std::vector<std::string> v) {
 	//obtain and offset nif position
 	auto vfxNode = actorNode->worldBound.center + Utils::vectorMatrixMult({std::stof(v[6]), std::stof(v[7]), std::stof(v[8]) },
 			actorNode->world.rotate);
-
-
-	cell->PlaceParticleEffect(
+	
+	RE::BSTempEffectParticle::Spawn(
+		cell,
 		std::stof(v[4]),
 		v[1].c_str(),
 		actorNode->world.rotate,
 		vfxNode,
 		std::stof(v[3]),
 		std::stoul(v[5], nullptr, 10),
-		actorNodeObj
-	);
+		actorNodeObj)
 
 
 }

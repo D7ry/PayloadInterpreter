@@ -1,7 +1,6 @@
 #include "payloadManager.h"
-#include "SimpleIni.h"
 #include "offsets.h"
-
+#include "settings.h"
 
 
 
@@ -76,18 +75,17 @@ void payloadManager::delegateCustom(RE::Actor* actor, std::string payload) {
 		}
 	}
 	else {
-		INFO("Error: payload mapping not found for {}.", payload);
+		logger::info("Error: payload mapping not found for {}.", payload);
 	}
 }
 
 void payloadManager::delegateAsync(RE::Actor* actor, std::string a_payload) {
 	//![Time]Actual_Payload
-	DEBUG("processing async payload: " + a_payload);
 	size_t start = a_payload.find_first_of('[');
 	size_t end = a_payload.find_first_of(']');
 	if (start == std::string::npos
 		|| end == std::string::npos) {
-		INFO("Error: invalid payload input: " + a_payload);
+		logger::info("Error: invalid payload input: " + a_payload);
 	}
 	float a_time = std::stof(a_payload.substr(start + 1, end - start - 1));
 	//DEBUG("time: {}", a_time);
@@ -124,33 +122,42 @@ void payloadManager::readSingleIni(const char* ini_path) {
 		for (CSimpleIniA::TNamesDepend::iterator s_it1 = keys.begin(); s_it1 != keys.end(); s_it1++) { //iterate through a section's all keys
 			const char* a_key = s_it1->pItem; 
 			logger::info("Loading payload mapping for key {} :", a_key);
-			if (a_key[0] == '$') {
-				std::list<CSimpleIniA::Entry> ls;
-				if (ini.GetAllValues(a_section, a_key, ls)
-					&& ls.size() != 0) {
-					for (CSimpleIniA::Entry e : ls) { //iterate through a key's all values
-						string a_instruction = e.pItem;
+			if (a_key[0] != '$') {
+				const char* msg = "Error: invalid key. Mapping entries must begin with $";
+				if (settings::bWarnAgainstInvalidConfigs) {
+					logger::error(msg);
+				}
+				else {
+					logger::info(msg);
+				}
+				continue;
+			}
+			std::list<CSimpleIniA::Entry> ls;
+			if (ini.GetAllValues(a_section, a_key, ls)
+				&& ls.size() != 0) {
+				for (CSimpleIniA::Entry e : ls) { //iterate through a key's all values
+					string a_instruction = e.pItem;
 ;						auto it = instructionMap.find(a_key);
-						if (it == instructionMap.end()) {
-							instructionMap.emplace(a_key, vector<string>{a_instruction});
-						}
-						else {
-							it->second.push_back(a_instruction);
-						}
-						logger::info(a_instruction);
+					if (it == instructionMap.end()) {
+						instructionMap.emplace(a_key, vector<string>{a_instruction});
 					}
+					else {
+						it->second.push_back(a_instruction);
+					}
+					logger::info(a_instruction);
 				}
 			}
-			else {
-				logger::info("Error: invalid key. Mapping entries should begin with $");
-			}
+			logger::info("mapping loaded for {}", a_key);
+
 		}
 	}
 }
+
+
 void payloadManager::logCurrentAnim(RE::Actor* a_actor)
 {
 	auto ToClipGenerator = [](RE::hkbNode* a_node) -> RE::hkbClipGenerator* {
-		constexpr char CLASS_NAME[] = "hkbClipGenerator";
+		const char* CLASS_NAME = "hkbClipGenerator";
 		if (a_node && a_node->GetClassType()) {
 			if (_strcmpi(a_node->GetClassType()->name, CLASS_NAME) == 0)
 				return skyrim_cast<RE::hkbClipGenerator*>(a_node);
@@ -159,20 +166,40 @@ void payloadManager::logCurrentAnim(RE::Actor* a_actor)
 		return nullptr;
 	};
 
+	RE::BSAnimationGraphManagerPtr graphManager;
+	if (!a_actor->GetAnimationGraphManager(graphManager)) {
+		return;
+	}
 
-	RE::BSAnimationGraphManagerPtr graphMgr;
-	if (a_actor->GetAnimationGraphManager(graphMgr) && graphMgr) {
-		auto behaviourGraph = graphMgr->graphs[0] ? graphMgr->graphs[0]->behaviourGraph : nullptr;
-		auto activeNodes = behaviourGraph ? behaviourGraph->activeNodes : nullptr;
-		if (activeNodes) {
-			for (auto nodeInfo : *activeNodes) {
-				auto nodeClone = nodeInfo.nodeClone;
-				if (nodeClone && nodeClone->GetClassType()) {
-					auto clipGenrator = ToClipGenerator(nodeClone);
-					if (clipGenrator)
-						CPrint("Get an Active Anim: \"%s\", localTime: %f", clipGenrator->animationName, clipGenrator->localTime);
-				}
+	if (!graphManager) {
+		return;
+	}
+	
+	auto ptr = graphManager->graphs[0];
+	if (!ptr) {
+		return;
+	}
+	
+	
+	RE::hkbBehaviorGraph* behaivorGraph = ptr->behaviorGraph;
+	if (!behaivorGraph) {
+		return;
+	}
+
+	RE::NodeList* activeNodes = behaivorGraph->activeNodes;
+	
+	if (!activeNodes) {
+		return;
+	}
+	
+	for (RE::hkbNodeInfo nodeInfo : *activeNodes) {
+		auto nodeClone = nodeInfo.nodeClone;
+		if (nodeClone && nodeClone->GetClassType()) {
+			auto clipGenrator = ToClipGenerator(nodeClone);
+			if (!clipGenrator) {
+				continue;
 			}
+			logger::info("Animation file: {}. Animation time: {}.", clipGenrator->animationName, clipGenrator->localTime);
 		}
 	}
 

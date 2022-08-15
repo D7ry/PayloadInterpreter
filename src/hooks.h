@@ -1,6 +1,6 @@
 #pragma once
 #include "payloadManager.h"
-namespace Hook
+namespace Hooks
 {
 	class hook_animationEvent
 	{
@@ -13,6 +13,7 @@ namespace Hook
 
 			_ProcessEvent_NPC = AnimEventVtbl_NPC.write_vfunc(0x1, ProcessEvent_NPC);
 			_ProcessEvent_PC = AnimEventVtbl_PC.write_vfunc(0x1, ProcessEvent_PC);
+			logger::info("...animation event hook installed");
 		}
 
 	private:
@@ -45,5 +46,9 @@ namespace Hook
 		static inline REL::Relocation<decltype(ProcessEvent_NPC)> _ProcessEvent_NPC;
 		static inline REL::Relocation<decltype(ProcessEvent_NPC)> _ProcessEvent_PC;
 	};
+
+	void install() {
+		hook_animationEvent::install();
+	}
 	
 }
