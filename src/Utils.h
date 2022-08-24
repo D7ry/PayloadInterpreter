@@ -45,7 +45,7 @@ public:
             if (ss.size() != 0) { //if token has 0 size, skip it.
                 output.emplace_back(ss);
             }
-            
+
 
             if (end == std::string::npos)
                 break;
@@ -71,10 +71,10 @@ public:
     }
 
     static void SGTM(float a_in) {
-        static float* g_SGTM = (float*)REL::ID(511883).address();
+        static float* g_SGTM = (float*) RELOCATION_ID(511883,388443).address();
         *g_SGTM = a_in;
         using func_t = decltype(SGTM);
-        REL::Relocation<func_t> func{ REL::ID(66989) };
+        REL::Relocation<func_t> func{ RELOCATION_ID(66989,0) };
         return;
     }
 

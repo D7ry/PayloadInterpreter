@@ -6,13 +6,8 @@ void MessageHandler(SKSE::MessagingInterface::Message* a_msg)
 	switch (a_msg->type) {
 	case SKSE::MessagingInterface::kDataLoaded:
 		logger::info("Data loaded.");
-#if ANNIVERSARY_EDITION
-		REL::Relocation<uintptr_t> npcPtr{ REL::ID(207890) }; //1753FE0
-		REL::Relocation<uintptr_t> pcPtr{ REL::ID(208044) };  //175A448
-#else
-		REL::Relocation<uintptr_t> npcPtr{ REL::ID(261399) }; //165e3b0
-		REL::Relocation<uintptr_t> pcPtr{ REL::ID(261918) }; //1663f78
-#endif
+		REL::Relocation<uintptr_t> npcPtr{ RELOCATION_ID(261399,207890) }; //165e3b0
+		REL::Relocation<uintptr_t> pcPtr{ RELOCATION_ID(261918,208044) }; //1663f78
 		Hooks::install();
 		payloadManager::loadPreDefinedPayload();
 		break;
@@ -70,7 +65,7 @@ std::string wstring2string(const std::wstring& wstr, UINT CodePage)
 	return ret;
 }
 
-extern "C" DLLEXPORT bool SKSEAPI SKSEPlugin_Query(const SKSE::QueryInterface* a_skse, SKSE::PluginInfo* a_info)
+extern "C" DLLEXPORT bool SKSEAPI SKSEPlugin_Query(const SKSE::QueryInterface * a_skse, SKSE::PluginInfo * a_info)
 {
 	a_info->infoVersion = SKSE::PluginInfo::kVersion;
 	a_info->name = Plugin::NAME.data();
@@ -78,12 +73,6 @@ extern "C" DLLEXPORT bool SKSEAPI SKSEPlugin_Query(const SKSE::QueryInterface* a
 
 	if (a_skse->IsEditor()) {
 		logger::critical("Loaded in editor, marking as incompatible"sv);
-		return false;
-	}
-
-	const auto ver = a_skse->RuntimeVersion();
-	if (ver < SKSE::RUNTIME_SSE_1_5_39) {
-		logger::critical(FMT_STRING("Unsupported runtime version {}"), ver.string());
 		return false;
 	}
 

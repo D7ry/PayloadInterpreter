@@ -49,7 +49,7 @@ void particleHandler::process(RE::Actor* actor, std::vector<std::string> v) {
 		vfxNode,
 		std::stof(v[3]),
 		std::stoul(v[5], nullptr, 10),
-		actorNodeObj)
+		actorNodeObj);
 
 
 }
