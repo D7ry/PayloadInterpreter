@@ -34,7 +34,7 @@ void payloadManager::preProcess(RE::Actor* actor, std::string a_payload)
 		payloadManager::delegateAsync(actor, a_payload);
 		break;
 	default:
-		logger::info("Error: invalid payload prefix: {} for payload {}.");
+		logger::info("Error: invalid payload prefix: {} for payload {}.", a_payload.at(0), a_payload);
 	}
 }
 
@@ -85,7 +85,7 @@ void payloadManager::delegateAsync(RE::Actor* actor, std::string a_payload) {
 	size_t end = a_payload.find_first_of(']');
 	if (start == std::string::npos
 		|| end == std::string::npos) {
-		logger::info("Error: invalid payload input: " + a_payload);
+		logger::info("Error: invalid payload input: {}", a_payload);
 	}
 	float a_time = std::stof(a_payload.substr(start + 1, end - start - 1));
 	//DEBUG("time: {}", a_time);
@@ -120,15 +120,15 @@ void payloadManager::readSingleIni(const char* ini_path) {
 		logger::info("Loading section {}...", a_section);
 		ini.GetAllKeys(a_section, keys);
 		for (CSimpleIniA::TNamesDepend::iterator s_it1 = keys.begin(); s_it1 != keys.end(); s_it1++) { //iterate through a section's all keys
-			const char* a_key = s_it1->pItem; 
+			const char* a_key = s_it1->pItem;
 			logger::info("Loading payload mapping for key {} :", a_key);
 			if (a_key[0] != '$') {
 				const char* msg = "Error: invalid key. Mapping entries must begin with $";
 				if (settings::bWarnAgainstInvalidConfigs) {
-					logger::error(msg);
+					logger::error("{}",msg);
 				}
 				else {
-					logger::info(msg);
+					logger::info("{}",msg);
 				}
 				continue;
 			}
@@ -144,7 +144,7 @@ void payloadManager::readSingleIni(const char* ini_path) {
 					else {
 						it->second.push_back(a_instruction);
 					}
-					logger::info(a_instruction);
+					logger::info("{}",a_instruction);
 				}
 			}
 			logger::info("mapping loaded for {}", a_key);
@@ -174,24 +174,24 @@ void payloadManager::logCurrentAnim(RE::Actor* a_actor)
 	if (!graphManager) {
 		return;
 	}
-	
+
 	auto ptr = graphManager->graphs[0];
 	if (!ptr) {
 		return;
 	}
-	
-	
+
+
 	RE::hkbBehaviorGraph* behaivorGraph = ptr->behaviorGraph;
 	if (!behaivorGraph) {
 		return;
 	}
 
 	RE::NodeList* activeNodes = behaivorGraph->activeNodes;
-	
+
 	if (!activeNodes) {
 		return;
 	}
-	
+
 	for (RE::hkbNodeInfo nodeInfo : *activeNodes) {
 		auto nodeClone = nodeInfo.nodeClone;
 		if (nodeClone && nodeClone->GetClassType()) {
@@ -199,7 +199,7 @@ void payloadManager::logCurrentAnim(RE::Actor* a_actor)
 			if (!clipGenrator) {
 				continue;
 			}
-			logger::info("Animation file: {}. Animation time: {}.", clipGenrator->animationName, clipGenrator->localTime);
+			logger::info("Animation file: {}. Animation time: {}.", clipGenrator->animationName.c_str(), clipGenrator->localTime);
 		}
 	}
 
