@@ -1,25 +1,20 @@
 set(ROOT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/..")
 
 set(SOURCE_DIR "${ROOT_DIR}/src")
-set(SOURCE_FILES
-	"${SOURCE_DIR}/main.cpp"
-	"${SOURCE_DIR}/hooks.h"
-	"${SOURCE_DIR}/events.h"
-	"${SOURCE_DIR}/offsets.h"
-	"${SOURCE_DIR}/payloadManager.cpp"
-	"${SOURCE_DIR}/payloadManager.h"
-	"${SOURCE_DIR}/settings.h"
-	"${SOURCE_DIR}/Utils.h"
-	"${SOURCE_DIR}/payloadHandlers/payloadHandler.h"
-	"${SOURCE_DIR}/payloadHandlers/actorValueHandler.cpp"
-	"${SOURCE_DIR}/payloadHandlers/cameraHandler.cpp"
-	"${SOURCE_DIR}/payloadHandlers/globalTimeHandler.cpp"
-	"${SOURCE_DIR}/payloadHandlers/graphVariableHandler.cpp"
-	"${SOURCE_DIR}/payloadHandlers/particleHandler.cpp"
-	"${SOURCE_DIR}/payloadHandlers/setGhostHandler.cpp"
-	"${SOURCE_DIR}/payloadHandlers/spellApplyHandler.cpp"
-	"${SOURCE_DIR}/payloadHandlers/spellCastHandler.cpp"
-)
+file(GLOB_RECURSE SOURCE_FILES "${SOURCE_DIR}/*.cpp" "${SOURCE_DIR}/*.h" "${SOURCE_DIR}/*.hpp")	
+
+# 对 SourceFile 变量里面的所有文件分类(保留资源管理器的目录结构)
+foreach(fileItem ${SOURCE_FILES})       
+    # Get the directory of the source file
+    get_filename_component(PARENT_DIR "${fileItem}" DIRECTORY)
+    # Remove common directory prefix to make the group
+    string(REPLACE "${CMAKE_CURRENT_SOURCE_DIR}" "" GROUP "${PARENT_DIR}")
+    # Make sure we are using windows slashes
+    string(REPLACE "/" "\\" GROUP "${GROUP}")
+    # Group into "Source Files" and "Header Files"
+    set(GROUP "${GROUP}")
+    source_group("${GROUP}" FILES "${fileItem}")
+endforeach()
 
 source_group(TREE "${ROOT_DIR}" FILES ${SOURCE_FILES})
 
@@ -44,6 +39,8 @@ add_library(
 	${SOURCE_FILES}
 	"${VERSION_HEADER}"
 	"${CMAKE_CURRENT_BINARY_DIR}/version.rc"
+	"${ROOT_DIR}/.clang-format"
+	"${ROOT_DIR}/.editorconfig"
 )
 
 target_compile_features(
@@ -88,7 +85,7 @@ target_include_directories(
 
 set(SKSE_SUPPORT_XBYAK ON)
 
-find_package(CommonLibSSE REQUIRED)
+add_subdirectory("$ENV{CommonLibSSEPath_NG}" CommonLibSSE EXCLUDE_FROM_ALL)
 
 find_package(xbyak REQUIRED CONFIG)
 

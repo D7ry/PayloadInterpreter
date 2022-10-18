@@ -1,3 +1,3 @@
 build
-.clang-format
-.editorconfig
+src/bin/_empty.cpp
+src/bin/_empty.h

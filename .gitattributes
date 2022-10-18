@@ -1,1 +1,2 @@
-\!Update.ps1 linguist-vendored
+# Auto detect text files and perform LF normalization
+* text=auto
