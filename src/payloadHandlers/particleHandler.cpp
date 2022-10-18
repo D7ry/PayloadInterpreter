@@ -16,7 +16,7 @@ void particleHandler::process(RE::Actor* actor, std::vector<std::string> v) {
 	if (!actor) {
 		return;
 	}
-	if (!actor->currentProcess || !actor->currentProcess->high) {
+	if (!actor->GetActorRuntimeData().currentProcess || !actor->GetActorRuntimeData().currentProcess->high) {
 		printErrMsg(v, "actor not in high process");
 		return;
 	}

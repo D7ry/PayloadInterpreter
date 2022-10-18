@@ -9,7 +9,6 @@ void MessageHandler(SKSE::MessagingInterface::Message* a_msg)
 		REL::Relocation<uintptr_t> npcPtr{ RELOCATION_ID(261399,207890) }; //165e3b0
 		REL::Relocation<uintptr_t> pcPtr{ RELOCATION_ID(261918,208044) }; //1663f78
 		Hooks::install();
-		payloadManager::loadPreDefinedPayload();
 		break;
 	}
 }
@@ -17,7 +16,7 @@ void MessageHandler(SKSE::MessagingInterface::Message* a_msg)
 
 void onSKSEInit()
 {
-
+	payloadManager::loadPreDefinedPayload();
 }
 
 namespace

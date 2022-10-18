@@ -97,8 +97,8 @@ void payloadManager::asyncThreadFunc(float time, RE::Actor* a_actor, std::string
 	std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(time * 1000)));
 	const auto task = SKSE::GetTaskInterface();
 	if (task != nullptr) {
-		if (a_actor && a_actor->currentProcess //actor must be in high process
-			&& a_actor->currentProcess->InHighProcess()) {
+		if (a_actor && a_actor->GetActorRuntimeData().currentProcess //actor must be in high process
+			&& a_actor->GetActorRuntimeData().currentProcess->InHighProcess()) {
 			task->AddTask([a_actor, a_payload]() {
 				preProcess(a_actor, a_payload);
 				});
@@ -153,57 +153,6 @@ void payloadManager::readSingleIni(const char* ini_path) {
 	}
 }
 
-
-void payloadManager::logCurrentAnim(RE::Actor* a_actor)
-{
-	auto ToClipGenerator = [](RE::hkbNode* a_node) -> RE::hkbClipGenerator* {
-		const char* CLASS_NAME = "hkbClipGenerator";
-		if (a_node && a_node->GetClassType()) {
-			if (_strcmpi(a_node->GetClassType()->name, CLASS_NAME) == 0)
-				return skyrim_cast<RE::hkbClipGenerator*>(a_node);
-		}
-
-		return nullptr;
-	};
-
-	RE::BSAnimationGraphManagerPtr graphManager;
-	if (!a_actor->GetAnimationGraphManager(graphManager)) {
-		return;
-	}
-
-	if (!graphManager) {
-		return;
-	}
-
-	auto ptr = graphManager->graphs[0];
-	if (!ptr) {
-		return;
-	}
-
-
-	RE::hkbBehaviorGraph* behaivorGraph = ptr->behaviorGraph;
-	if (!behaivorGraph) {
-		return;
-	}
-
-	RE::NodeList* activeNodes = behaivorGraph->activeNodes;
-
-	if (!activeNodes) {
-		return;
-	}
-
-	for (RE::hkbNodeInfo nodeInfo : *activeNodes) {
-		auto nodeClone = nodeInfo.nodeClone;
-		if (nodeClone && nodeClone->GetClassType()) {
-			auto clipGenrator = ToClipGenerator(nodeClone);
-			if (!clipGenrator) {
-				continue;
-			}
-			logger::info("Animation file: {}. Animation time: {}.", clipGenrator->animationName.c_str(), clipGenrator->localTime);
-		}
-	}
-
-}
 void payloadManager::loadPreDefinedPayload() {
 	logger::info("Loading predefined payload instructions...");
 	if (std::filesystem::is_directory(configDir)) {

@@ -32,9 +32,9 @@ void spellCastHandler::process(RE::Actor* actor, std::vector<std::string> arr){
 	}
 
 	//Check actor value requirements.
-	if (actor->GetActorValue(RE::ActorValue::kHealth) < std::stof(arr[6])
-		||actor->GetActorValue(RE::ActorValue::kStamina) < std::stof(arr[8])
-		||actor->GetActorValue(RE::ActorValue::kMagicka) < std::stof(arr[10])
+	if (actor->AsActorValueOwner()->GetActorValue(RE::ActorValue::kHealth) < std::stof(arr[6])
+		||actor->AsActorValueOwner()->GetActorValue(RE::ActorValue::kStamina) < std::stof(arr[8]) 
+		|| actor->AsActorValueOwner()->GetActorValue(RE::ActorValue::kMagicka) < std::stof(arr[10])
 		) {
 		//DEBUG("Actor value requirement not met.");
 		return;
@@ -53,7 +53,7 @@ void spellCastHandler::process(RE::Actor* actor, std::vector<std::string> arr){
 		CastSpellImmediate(spell, false, target, std::stof(arr[3]), false, std::stof(arr[4]), actor);
 
 	//Damage actor value
-	spell->CalculateMagickaCost(actor);
+	//spell->CalculateMagickaCost(actor);
 	if (std::stof(arr[7]) != 0) {
 		Utils::damageav(actor, RE::ActorValue::kHealth, std::stof(arr[7]));
 	}
