@@ -1,6 +1,6 @@
 #pragma once
 #include "payloadHandler.h"
-void particleHandler::process(RE::Actor* actor, std::vector<std::string> v) {
+void particleHandler::process(RE::Actor* actor, std::vector<std::string_view>* v) {
 	//0 instruction
 	//1 (string)nif model path
 	//2 (int)biped body index
@@ -25,7 +25,13 @@ void particleHandler::process(RE::Actor* actor, std::vector<std::string> v) {
 		printErrMsg(v, "cell not found.");
 		return;
 	}
-	auto actorNode = actor->GetCurrentBiped()->objects[static_cast<RE::BIPED_OBJECT>(std::stoi(v[2]))].partClone;
+
+	int actorNodeIndex;
+	if (!Utils::string_view::to_int(v->at(2), actorNodeIndex)) {
+		printErrMsg(v, "invalid actor node index.");
+		return;
+	}
+	auto actorNode = actor->GetCurrentBiped()->objects[static_cast<RE::BIPED_OBJECT>(actorNodeIndex)].partClone;
 	if (!actorNode) {
 		printErrMsg(v, "actor biped node not found.");
 		return;
@@ -36,20 +42,47 @@ void particleHandler::process(RE::Actor* actor, std::vector<std::string> v) {
 		return;
 	}
 	//DEBUG("all checks passed");
+	float xOffset, yOffset, zOffset;
+	if (!Utils::string_view::to_float(v->at(6), xOffset)) {
+		printErrMsg(v, "invalid x offset.");
+		return;
+	}
+	if (!Utils::string_view::to_float(v->at(7), yOffset)) {
+		printErrMsg(v, "invalid y offset.");
+		return;
+	}
+	if (!Utils::string_view::to_float(v->at(8), zOffset)) {
+		printErrMsg(v, "invalid z offset.");
+		return;
+	}
 
 	//obtain and offset nif position
-	auto vfxNode = actorNode->worldBound.center + Utils::vectorMatrixMult({std::stof(v[6]), std::stof(v[7]), std::stof(v[8]) },
-			actorNode->world.rotate);
+	auto vfxNode = actorNode->worldBound.center + Utils::vectorMatrixMult({ xOffset, yOffset, zOffset }, actorNode->world.rotate);
 	
+	float lifeTime;
+	if (!Utils::string_view::to_float(v->at(4), lifeTime)) {
+		printErrMsg(v, "invalid life time.");
+		return;
+	}
+
+	float scale;
+	if (!Utils::string_view::to_float(v->at(3), scale)) {
+		printErrMsg(v, "invalid scale.");
+		return;
+	}
+
+	uint32_t flags;
+	if (!Utils::string_view::to_uint(v->at(5), flags)) {
+		printErrMsg(v, "invalid flags.");
+		return;
+	}
 	RE::BSTempEffectParticle::Spawn(
 		cell,
-		std::stof(v[4]),
-		v[1].c_str(),
+		lifeTime,
+		std::string(v->at(1)).data(),
 		actorNode->world.rotate,
 		vfxNode,
-		std::stof(v[3]),
-		std::stoul(v[5], nullptr, 10),
+		scale,
+		flags,
 		actorNodeObj);
-
-
 }

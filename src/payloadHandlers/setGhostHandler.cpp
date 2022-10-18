@@ -1,19 +1,20 @@
 #pragma once
 #include "payloadHandler.h"
 #include "offsets.h"
-void setGhostHandler::process(RE::Actor* actor, std::vector<std::string> v) {
+void setGhostHandler::process(RE::Actor* actor, std::vector<std::string_view>* v) {
 	if (!checkParamCt(v, 1)) {
 		return;
 	}
 
-	bool isGhost = false;
-	switch (std::stoi(v[1])) {
-	case 0: break;
-	case 1: isGhost = true; break;
-	default: printErrMsg(v, "invalid parameter for self-targeting spell."); return;
+	if (!actor) {
+		return;
 	}
 
-	if (actor) {
-		offsets::setIsGhost(actor, isGhost);
+	bool isGhost = false;
+	if (!Utils::string_view::to_bool(v->at(1), isGhost)) {
+		printErrMsg(v, "Invalid argument for ghost.");
+		return;
 	}
+
+	offsets::setIsGhost(actor, isGhost);
 }

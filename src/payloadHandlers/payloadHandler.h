@@ -3,16 +3,16 @@
 class payloadHandler {
 public:
 	/*process the parameters of a payload funcion.*/
-	static void process(RE::Actor* actor, std::vector<std::string> param) {
+	static void process(RE::Actor* actor, std::vector<std::string_view>* param) {
 		//interpret the information in the payload command and execute commands.
 	};
 
 	/*Prints out an error message and the command errored on.
 	@param v: tokenized instruction.
 	@param errMsg: Error message to print.*/
-	static void printErrMsg(std::vector<std::string> v, std::string errMsg) {
+	static void printErrMsg(std::vector<std::string_view>* v, std::string errMsg) {
 		std::string org;
-		if (auto i = v.begin(), e = v.end(); i != e) {
+		if (auto i = v->begin(), e = v->end(); i != e) {
 			org += *i++;
 			for (; i != e; ++i) org.append("|").append(*i);
 		};
@@ -22,11 +22,11 @@ public:
 	@param param: vector containing all parameters and instruction.
 	@param ct: expected i.e. correct number of parameters.
 	@return whether the number of tokens in param matches ct.*/
-	static inline bool checkParamCt(std::vector<std::string> param, int ct) {
-		if (param.size() != ct + 1) {
+	static inline bool checkParamCt(std::vector<std::string_view>* param, int ct) {
+		if (param->size() != ct + 1) {
 			printErrMsg(param,
 				"incorrect number of parameters passed in, expected: "
-				+ std::to_string(ct) + " received: " + std::to_string(param.size() - 1)
+				+ std::to_string(ct) + " received: " + std::to_string(param->size() - 1)
 			);
 			return false;
 		}
@@ -44,7 +44,7 @@ public:
 		Int,
 		Bool
 	};
-	static void process(RE::Actor* actor, std::vector<std::string> param, GRAPHVARIABLETYPE graphVariableType);
+	static void process(RE::Actor* actor, std::vector<std::string_view>* param, GRAPHVARIABLETYPE graphVariableType);
 
 };
 
@@ -52,14 +52,14 @@ class globalTimeHandler : public payloadHandler {
 public:
 	/*process the parameters of a payload funcion.*/
 	//SGTM takes 1 param.
-	static void process(std::vector<std::string> param);
+	static void process(std::vector<std::string_view>* param);
 
 };
 
 /*Deal with spell casting.*/
 class spellCastHandler : public payloadHandler {
 public:
-	static void process(RE::Actor* actor, std::vector<std::string> param);
+	static void process(RE::Actor* actor, std::vector<std::string_view>* param);
 };
 
 /*Apply/removal of spells/mgef.*/
@@ -69,7 +69,7 @@ public:
 		add = 0,
 		remove = 1
 	};
-	static void process(RE::Actor* a_actor, std::vector<std::string> v, spellApplyHandler::OPERATION op);
+	static void process(RE::Actor* a_actor, std::vector<std::string_view>* v, spellApplyHandler::OPERATION op);
 };
 
 class SPIDHandler : public payloadHandler {
@@ -93,17 +93,17 @@ public:
 		FOV,
 	};
 	/*Shakes the player's camera.*/
-	static void process(RE::Actor* actor, std::vector<std::string> param, CAMOPTYPE op);
+	static void process(RE::Actor* actor, std::vector<std::string_view>* param, CAMOPTYPE op);
 };
 
 class setGhostHandler : public payloadHandler {
 public:
-	static void process(RE::Actor* actor, std::vector<std::string> param);
+	static void process(RE::Actor* actor, std::vector<std::string_view>* param);
 };
 
 
 /*Apply .nif effects*/
 class particleHandler : public payloadHandler {
 public:
-	static void process(RE::Actor* actor, std::vector<std::string> v);
+	static void process(RE::Actor* actor, std::vector<std::string_view>* v);
 };

@@ -5,7 +5,7 @@ void MessageHandler(SKSE::MessagingInterface::Message* a_msg)
 {
 	switch (a_msg->type) {
 	case SKSE::MessagingInterface::kDataLoaded:
-		logger::info("Data loaded.");
+		//logger::info("Data loaded.");
 		REL::Relocation<uintptr_t> npcPtr{ RELOCATION_ID(261399,207890) }; //165e3b0
 		REL::Relocation<uintptr_t> pcPtr{ RELOCATION_ID(261918,208044) }; //1663f78
 		Hooks::install();
@@ -98,7 +98,7 @@ extern "C" DLLEXPORT bool SKSEAPI SKSEPlugin_Load(const SKSE::LoadInterface* a_s
 	REL::Module::reset();  // Clib-NG bug workaround
 
 	InitializeLog();
-	logger::info("{} v{}"sv, Plugin::NAME, Plugin::VERSION.string());
+	//logger::info("{} v{}"sv, Plugin::NAME, Plugin::VERSION.string());
 
 	SKSE::Init(a_skse);
 

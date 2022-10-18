@@ -27,8 +27,9 @@ namespace Hooks
 			if (!holder) {
 				return;
 			}
-
-			payloadManager::preProcess(holder->As<RE::Actor>(), a_event->payload.data());
+			/*Make a shared ptr for data to avoid it being copied multiple times*/
+			std::string payload = std::string(a_event->payload.data());
+			payloadManager::preProcess(holder->As<RE::Actor>(), &payload);
 
 		}
 		using EventResult = RE::BSEventNotifyControl;
