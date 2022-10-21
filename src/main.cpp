@@ -46,7 +46,7 @@ namespace
 		log->flush_on(level);
 
 		spdlog::set_default_logger(std::move(log));
-		spdlog::set_pattern("%g(%#): [%^%l%$] %v"s);
+		spdlog::set_pattern("%s(%#): [%^%l%$] %v"s);
 	}
 }
 
@@ -99,7 +99,7 @@ extern "C" DLLEXPORT bool SKSEAPI SKSEPlugin_Load(const SKSE::LoadInterface* a_s
 	REL::Module::reset();  // Clib-NG bug workaround
 
 	InitializeLog();
-	//logger::info("{} v{}"sv, Plugin::NAME, Plugin::VERSION.string());
+	logger::info("{} v{}"sv, Plugin::NAME, Plugin::VERSION.string());
 
 	SKSE::Init(a_skse);
 
