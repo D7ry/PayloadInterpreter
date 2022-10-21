@@ -2,6 +2,7 @@
   "name": "payloadinterpreter",
   "version": "1",
   "dependencies": [
+    "commonlibsse-ng",
     "fast-cpp-csv-parser",
     "rsm-binary-io",
     "simpleini",

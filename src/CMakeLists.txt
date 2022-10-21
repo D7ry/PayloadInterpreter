@@ -1,10 +1,10 @@
 set(ROOT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/..")
 
 set(SOURCE_DIR "${ROOT_DIR}/src")
-file(GLOB_RECURSE SOURCE_FILES "${SOURCE_DIR}/*.cpp" "${SOURCE_DIR}/*.h" "${SOURCE_DIR}/*.hpp")	
+file(GLOB_RECURSE SOURCE_FILES "${SOURCE_DIR}/*.cpp" "${SOURCE_DIR}/*.h" "${SOURCE_DIR}/*.hpp")
 
 # 对 SourceFile 变量里面的所有文件分类(保留资源管理器的目录结构)
-foreach(fileItem ${SOURCE_FILES})       
+foreach(fileItem ${SOURCE_FILES})
     # Get the directory of the source file
     get_filename_component(PARENT_DIR "${fileItem}" DIRECTORY)
     # Remove common directory prefix to make the group
@@ -85,8 +85,8 @@ target_include_directories(
 
 set(SKSE_SUPPORT_XBYAK ON)
 
-add_subdirectory("$ENV{CommonLibSSEPath_NG}" CommonLibSSE EXCLUDE_FROM_ALL)
-
+find_package(CommonLibSSE CONFIG REQUIRED)
+add_compile_definitions(ENABLE_COMMONLIBSSE_TESTING)
 find_package(xbyak REQUIRED CONFIG)
 
 target_link_libraries(
