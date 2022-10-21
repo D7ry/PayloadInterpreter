@@ -19,6 +19,7 @@ void spellCastHandler::process(RE::Actor* actor, std::vector<std::string_view>* 
 		return;
 	}
 
+
 	RE::SpellItem* spell = nullptr;
 	
 	if (!Utils::lookup(arr->at(1), arr->at(2), spell)) {

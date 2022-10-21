@@ -14,6 +14,7 @@ public:
 	//static void update(); //called once per frame
 	/*preProcess different types of instructions.*/
 	static void preProcess(RE::Actor* actor, std::string* a_payload);
+	static void preProcess(RE::Actor* actor, std::string a_payload);
 	/*Delegate a parsed native instruction to corresponding handlers.*/
 	static void delegateNative(RE::Actor* actor, std::string* a_payload);
 	/*Try to match pre-defined payload to their pre-defined definitions in .ini and do work.*/
@@ -22,7 +23,7 @@ public:
 	static void delegateAsync(RE::Actor* actor, std::string* a_payload);
 	/*Function run in an async thread.
 	@param time: time until the payload instruction fires.*/
-	static void asyncThreadFunc(float time, RE::Actor* actor, std::string* a_payload);
+	static void asyncThreadFunc(float time, RE::Actor* actor, std::string a_payload);
 	/*Load pre-defined payload from .ini file.*/
 	static void loadPreDefinedPayload();
 private:

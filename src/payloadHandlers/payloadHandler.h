@@ -11,12 +11,8 @@ public:
 	@param v: tokenized instruction.
 	@param errMsg: Error message to print.*/
 	static void printErrMsg(std::vector<std::string_view>* v, std::string errMsg) {
-		std::string org;
-		if (auto i = v->begin(), e = v->end(); i != e) {
-			org += *i++;
-			for (; i != e; ++i) org.append("|").append(*i);
-		};
-		logger::info("Error: {} Errored instruction: {}", errMsg, org);
+		const char* instruction = v->at(0).data();  //char* at the start of the instruction, printing from this point will print out the whole instruction.
+		logger::info("Error: {} Errored instruction: {}", errMsg, instruction);
 	}
 	/*check if the amount of parameter in the vector is correct, ignoring the instruction. If not, prints an error message.
 	@param param: vector containing all parameters and instruction.

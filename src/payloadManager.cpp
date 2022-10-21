@@ -21,7 +21,8 @@ constexpr uint32_t operator"" _h(const char* str, size_t size) noexcept
 }
 
 /**
-* Note: a_paylaod will will be deleted by the caller once this function returns.
+* Looks at the 1st character of a payload and returns the corresponding payloadHandler.
+* Note: a_payload will may be deleted by the caller once this function returns, so it's the callee's responsibility to copy it if needed.
 */
 void payloadManager::preProcess(RE::Actor* actor, std::string* a_payload)
 {
@@ -41,11 +42,14 @@ void payloadManager::preProcess(RE::Actor* actor, std::string* a_payload)
 	}
 }
 
+void payloadManager::preProcess(RE::Actor* actor, std::string a_payload) 
+{
+	preProcess(actor, &a_payload);
+}
+
+
 void payloadManager::delegateNative(RE::Actor* actor, std::string* a_payload) {
 	std::vector<std::string_view> tokens = Utils::splitSV(std::string_view(*a_payload), '|');
-	for (auto str : tokens) {
-		logger::info("token: {}", str);
-	}
 	switch (hash(tokens[0].data(), tokens[0].size())) {
 	case "@SGVB"_h:
 		graphVariableHandler::process(actor, &tokens, graphVariableHandler::GRAPHVARIABLETYPE::Bool); break;
@@ -86,22 +90,21 @@ void payloadManager::delegateCustom(RE::Actor* actor, std::string* payload) {
 }
 
 void payloadManager::delegateAsync(RE::Actor* a_actor, std::string* a_payload) {
-	//![Time]Actual_Payload
 	size_t start = a_payload->find_first_of('[');
 	size_t end = a_payload->find_first_of(']');
 	if (start == std::string::npos
 		|| end == std::string::npos) {
-		////logger::info("Error: invalid payload input: {}", a_payload);
+		logger::info("Error: invalid async payload input: {}", *a_payload);
 	}
 	float time = std::stof(a_payload->substr(start + 1, end - start - 1));
 	//DEBUG("time: {}", a_time);
-	std::string* rest = new std::string(a_payload->substr(end + 1));
+	std::string rest(a_payload->substr(end + 1));
 	std::jthread thread(asyncThreadFunc, time, a_actor, rest);
 	thread.detach();
 }
 
 /*Perform a timer and then preprocess the payload instruction. Payload needs to be freed after proprocess.*/
-void payloadManager::asyncThreadFunc(float time, RE::Actor* a_actor, std::string* a_payload)
+void payloadManager::asyncThreadFunc(float time, RE::Actor* a_actor, std::string a_payload)
 {
 	std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(time * 1000)));
 	const auto task = SKSE::GetTaskInterface();
@@ -111,7 +114,6 @@ void payloadManager::asyncThreadFunc(float time, RE::Actor* a_actor, std::string
 			&& a_actor->GetActorRuntimeData().currentProcess->InHighProcess()) {
 			task->AddTask([a_actor, a_payload]() {
 				preProcess(a_actor, a_payload);
-				free(a_payload);
 				});
 		}
 	}
