@@ -36,3 +36,11 @@ private:
 	static void logCurrentAnim(RE::Actor* a_actor);
 
 };
+
+
+/* Temp class for CPR*/
+class CPR : public payloadHandler
+{
+public:
+	static void delegateNative(RE::Actor* actor, std::string* a_payload);
+};

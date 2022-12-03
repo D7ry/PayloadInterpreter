@@ -13,7 +13,7 @@ namespace Utils
 	
 	
     /*Tokenize a string_view into a vector of string_view.*/
-	std::vector<std::string_view> splitSV(std::string_view strv, const char delim = '|');
+	void splitSV(std::vector<std::string_view>& ret, std::string_view strv, const char delim = '|');
 
     void SGTM(float a_in);
 	

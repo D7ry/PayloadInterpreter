@@ -19,7 +19,7 @@ namespace Hooks
 	private:
 		static inline void ProcessEvent(RE::BSTEventSink<RE::BSAnimationGraphEvent>* a_sink, RE::BSAnimationGraphEvent* a_event, RE::BSTEventSource<RE::BSAnimationGraphEvent>* a_eventSource) 
 		{
-			if (a_event->tag != "PIE") {
+			if (a_event->tag != "PIE" && a_event->tag != "CPR") {
 				return;
 			}
 			RE::TESObjectREFR* holder = const_cast<RE::TESObjectREFR*>(a_event->holder);
@@ -27,9 +27,12 @@ namespace Hooks
 			if (!holder) {
 				return;
 			}
-			/*Make a shared ptr for data to avoid it being copied multiple times*/
 			std::string payload = std::string(a_event->payload.data());
-			payloadManager::preProcess(holder->As<RE::Actor>(), &payload);
+			if (a_event->tag == "PIE") {
+				payloadManager::preProcess(holder->As<RE::Actor>(), &payload);
+			} else {
+				CPR::delegateNative(holder->As<RE::Actor>(), &payload);
+			}
 
 		}
 		using EventResult = RE::BSEventNotifyControl;

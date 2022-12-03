@@ -22,7 +22,7 @@ constexpr uint32_t operator"" _h(const char* str, size_t size) noexcept
 
 /**
 * Looks at the 1st character of a payload and returns the corresponding payloadHandler.
-* Note: a_payload will may be deleted by the caller once this function returns, so it's the callee's responsibility to copy it if needed.
+* Note: A_PAYLOAD will may be freed by the caller once this function returns, so it's the callee's responsibility to copy it if needed.
 */
 void payloadManager::preProcess(RE::Actor* actor, std::string* a_payload)
 {
@@ -49,7 +49,8 @@ void payloadManager::preProcess(RE::Actor* actor, std::string a_payload)
 
 
 void payloadManager::delegateNative(RE::Actor* actor, std::string* a_payload) {
-	std::vector<std::string_view> tokens = Utils::splitSV(std::string_view(*a_payload), '|');
+	std::vector<std::string_view> tokens;
+	Utils::splitSV(tokens, std::string_view(a_payload->c_str()), '|');
 	switch (hash(tokens[0].data(), tokens[0].size())) {
 	case "@SGVB"_h:
 		graphVariableHandler::process(actor, &tokens, graphVariableHandler::GRAPHVARIABLETYPE::Bool); break;
@@ -84,9 +85,7 @@ void payloadManager::delegateCustom(RE::Actor* actor, std::string* payload) {
 			preProcess(actor, instruction);
 		}
 	}
-	else {
-		//logger::info("Error: payload mapping not found for {}.", payload);
-	}
+
 }
 
 void payloadManager::delegateAsync(RE::Actor* a_actor, std::string* a_payload) {
@@ -98,7 +97,7 @@ void payloadManager::delegateAsync(RE::Actor* a_actor, std::string* a_payload) {
 	}
 	float time = std::stof(a_payload->substr(start + 1, end - start - 1));
 	//DEBUG("time: {}", a_time);
-	std::string rest(a_payload->substr(end + 1));
+	std::string rest(a_payload->substr(end + 1));  //make a copy, since A_PAYLOAD gets popped off of the stack
 	std::jthread thread(asyncThreadFunc, time, a_actor, rest);
 	thread.detach();
 }
@@ -179,3 +178,26 @@ void payloadManager::loadPreDefinedPayload() {
 	logger::info("Predefined instructions loaded.");
 }
 #pragma endregion
+
+void CPR::delegateNative(RE::Actor* actor, std::string* a_payload)
+{
+	std::vector<std::string_view> tokens;
+	Utils::splitSV(tokens, std::string_view(a_payload->c_str()), '|');
+	switch (hash(tokens[0].data(), tokens[0].size())) {
+	case "EnableAdvance"_h: // CPR|EnableAdvance|111|222|333|444|555|666
+		CPRHandler::process(actor, &tokens, CPRHandler::FUNCTION::EnableAdvance);
+		break;
+	case "EnableBackoff"_h: // CPR|EnableBackoff|11|22
+		CPRHandler::process(actor, &tokens, CPRHandler::FUNCTION::EnableBackoff);
+		break;
+	case "EnableCircling"_h: // CPR|EnableCircling|33|44
+		CPRHandler::process(actor, &tokens, CPRHandler::FUNCTION::EnableCircling);
+		break;
+	case "EnableSurround"_h: // CPR|EnableSurround|...
+		CPRHandler::process(actor, &tokens, CPRHandler::FUNCTION::EnableSurround);
+		break;
+	case "EnableFallback"_h: // CPR|EnableFallback|...
+		CPRHandler::process(actor, &tokens, CPRHandler::FUNCTION::EnableFallback);
+		break;
+	}
+}

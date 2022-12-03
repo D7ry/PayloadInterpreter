@@ -18,7 +18,7 @@ public:
 	@param param: vector containing all parameters and instruction.
 	@param ct: expected i.e. correct number of parameters.
 	@return whether the number of tokens in param matches ct.*/
-	static inline bool checkParamCt(std::vector<std::string_view>* param, int ct) {
+	static bool checkParamCt(std::vector<std::string_view>* param, int ct) {
 		if (param->size() != ct + 1) {
 			printErrMsg(param,
 				"incorrect number of parameters passed in, expected: "
@@ -102,4 +102,25 @@ public:
 class particleHandler : public payloadHandler {
 public:
 	static void process(RE::Actor* actor, std::vector<std::string_view>* v);
+};
+
+/*MaxSu's CPR stuff*/
+class CPRHandler : public payloadHandler {
+public:
+	enum FUNCTION
+	{
+		EnableAdvance,
+		EnableBackoff,
+		EnableCircling,
+		EnableSurround,
+		EnableFallback
+	};
+	static void process(RE::Actor* actor, std::vector<std::string_view>* v, FUNCTION f);
+
+private:
+	static void enableAdvance(RE::Actor* actor, std::vector<std::string_view>* v);
+	static void enableBackoff(RE::Actor* actor, std::vector<std::string_view>* v);
+	static void enableCircling(RE::Actor* actor, std::vector<std::string_view>* v);
+	static void enableSurround(RE::Actor* actor, std::vector<std::string_view>* v);
+	static void enableFallback(RE::Actor* actor, std::vector<std::string_view>* v);
 };

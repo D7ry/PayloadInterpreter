@@ -2,16 +2,15 @@
 
 
 /*Tokenize a string_view into a vector of string_view.*/
-std::vector<std::string_view> Utils::splitSV(std::string_view strv, const char delim)
+void Utils::splitSV(std::vector<std::string_view>& ret, std::string_view strv, const char delim)
 {
-	std::vector<std::string_view> output;
 	size_t first = 0;
 
 	while (first < strv.size()) {
 		const auto second = strv.find_first_of(delim, first);
 
 		if (first != second)
-			output.emplace_back(strv.substr(first, second - first));
+			ret.emplace_back(strv.substr(first, second - first));
 
 		if (second == std::string_view::npos)
 			break;
@@ -19,7 +18,6 @@ std::vector<std::string_view> Utils::splitSV(std::string_view strv, const char d
 		first = second + 1;
 	}
 
-	return output;
 }
 
 void Utils::SGTM(float a_in)
