@@ -42,6 +42,12 @@ public:
 	};
 	static void process(RE::Actor* actor, std::vector<std::string_view>* param, GRAPHVARIABLETYPE graphVariableType);
 
+private:
+	static inline void setGraphVariableBool(RE::Actor* actor, std::vector<std::string_view>* in);
+	static inline void setGraphVariableFloat(RE::Actor* actor, std::vector<std::string_view>* in);
+	static inline void setGraphVariableInt(RE::Actor* actor, std::vector<std::string_view>* in);
+
+
 };
 
 class globalTimeHandler : public payloadHandler {

@@ -36,6 +36,7 @@ void CPRHandler::enableAdvance(RE::Actor* a_actor, std::vector<std::string_view>
 		printErrMsg(v, "Invalid argument for CPR_EnableAdvance.");
 		return;
 	}
+	logger::info("CPR:EnableAdvance for {}", a_actor->GetName());
 	a_actor->SetGraphVariableBool("CPR_EnableAdvanceRadius", true);
 
 	//Set innerRadius value
@@ -59,6 +60,7 @@ void CPRHandler::enableBackoff(RE::Actor* a_actor, std::vector<std::string_view>
 		printErrMsg(v, "Invalid argument for CPR_EnableBackoff.");
 		return;
 	}
+	logger::info("CPR:EnableBackoff for {}", a_actor->GetName());
 	//Enable data override on vanilla Backoff data.
 	a_actor->SetGraphVariableBool("CPR_EnableBackoff", true);
 
@@ -80,6 +82,7 @@ void CPRHandler::enableCircling(RE::Actor* a_actor, std::vector<std::string_view
 		printErrMsg(v, "Invalid argument for CPR_EnableCircling.");
 		return;
 	}
+	logger::info("CPR:EnableCircling for {}", a_actor->GetName());
 	//Enable data override on vanilla Circling data.
 	a_actor->SetGraphVariableBool("CPR_EnableCircling", true);
 
@@ -96,10 +99,11 @@ void CPRHandler::enableSurround(RE::Actor* a_actor, std::vector<std::string_view
 		return;
 	}
 	float SurroundDistMin, SurroundDistMax;
-	if (!Utils::string_view::to_float(v->at(1), SurroundDistMax) || !Utils::string_view::to_float(v->at(2), SurroundDistMin)) {
+	if (!Utils::string_view::to_float(v->at(1), SurroundDistMin) || !Utils::string_view::to_float(v->at(2), SurroundDistMax)) {
 		printErrMsg(v, "Invalid argument for CPR_EnableSurround.");
 		return;
 	}
+	logger::info("CPR:EnableSurround for {}", a_actor->GetName());
 	//Enable data override on vanilla Surround data.
 	a_actor->SetGraphVariableBool("CPR_EnableSurround", true);
 
@@ -121,6 +125,7 @@ void CPRHandler::enableFallback(RE::Actor* a_actor, std::vector<std::string_view
 		printErrMsg(v, "Invalid argument for CPR_EnableFallback.");
 		return;
 	}
+	logger::info("CPR:EnableFallback for {}", a_actor->GetName());
 	//Enable data override on vanilla Fallback data.
 	a_actor->SetGraphVariableBool("CPR_EnableFallback", true);
 

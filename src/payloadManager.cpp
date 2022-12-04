@@ -22,7 +22,7 @@ constexpr uint32_t operator"" _h(const char* str, size_t size) noexcept
 
 /**
 * Looks at the 1st character of a payload and returns the corresponding payloadHandler.
-* Note: A_PAYLOAD will may be freed by the caller once this function returns, so it's the callee's responsibility to copy it if needed.
+* Note: A_PAYLOAD may be freed by the caller once this function returns, so it's the callee's responsibility to copy it if needed(for async stuff).
 */
 void payloadManager::preProcess(RE::Actor* actor, std::string* a_payload)
 {
@@ -181,6 +181,7 @@ void payloadManager::loadPreDefinedPayload() {
 
 void CPR::delegateNative(RE::Actor* actor, std::string* a_payload)
 {
+	logger::info("CPR instruction triggered for {}; instruction: {}", actor->GetName(), a_payload->c_str());
 	std::vector<std::string_view> tokens;
 	Utils::splitSV(tokens, std::string_view(a_payload->c_str()), '|');
 	switch (hash(tokens[0].data(), tokens[0].size())) {

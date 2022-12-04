@@ -1,29 +1,32 @@
 #pragma once
 #include "payloadHandler.h"
-inline void setGraphVariableBool(RE::Actor* actor, std::vector<std::string_view>* in)
+
+void graphVariableHandler::setGraphVariableBool(RE::Actor* actor, std::vector<std::string_view>* in)
 {
 	bool b;
 	if (!Utils::string_view::to_bool(in->at(2), b)) {
+		printErrMsg(in, "Invalid argument for setGraphVariableBool.");
 		return;
 	}
 	
-	actor->SetGraphVariableBool(in->at(1), b);
-	//DEBUG("set {}'s graph variable bool {} to {}", actor->GetName(), in[1], in[2]);
+	actor->SetGraphVariableBool(std::string(in->at(1)), b);
 }
 
-inline void setGraphVariableFloat(RE::Actor* actor, std::vector<std::string_view>* in) 
+void graphVariableHandler::setGraphVariableFloat(RE::Actor* actor, std::vector<std::string_view>* in)
 {
 	float f;
 	if (!Utils::string_view::to_float(in->at(2), f)) {
+		printErrMsg(in, "Invalid argument for setGraphVariableFloat.");
 		return;
 	}
 	actor->SetGraphVariableFloat(std::string(in->at(1)), f);
 }
 
-inline void setGraphVariableInt(RE::Actor* actor, std::vector<std::string_view>* in)
+void graphVariableHandler::setGraphVariableInt(RE::Actor* actor, std::vector<std::string_view>* in)
 {
 	int i;
 	if (!Utils::string_view::to_int(in->at(2), i)) {
+		printErrMsg(in, "Invalid argument for setGraphVariableInt.");
 		return;
 	}
 	actor->SetGraphVariableInt(std::string(in->at(1)), i);

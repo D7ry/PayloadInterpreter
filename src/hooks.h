@@ -28,7 +28,7 @@ namespace Hooks
 				return;
 			}
 			std::string payload = std::string(a_event->payload.data());
-			if (a_event->tag == "PIE") {
+			if (a_event->tag[0] == 'P') {
 				payloadManager::preProcess(holder->As<RE::Actor>(), &payload);
 			} else {
 				CPR::delegateNative(holder->As<RE::Actor>(), &payload);
