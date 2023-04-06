@@ -1,5 +1,7 @@
 #pragma once
-#include "payloadManager.h"
+
+#include "PayloadHandlerManager.h"
+
 namespace Hooks
 {
 	class hook_animationEvent
@@ -17,33 +19,36 @@ namespace Hooks
 		}
 
 	private:
-		static inline void ProcessEvent(RE::BSTEventSink<RE::BSAnimationGraphEvent>* a_sink, RE::BSAnimationGraphEvent* a_event, RE::BSTEventSource<RE::BSAnimationGraphEvent>* a_eventSource) 
+		static inline void ProcessEvent(RE::BSAnimationGraphEvent* a_event, RE::BSTEventSource<RE::BSAnimationGraphEvent>* a_eventSource)
 		{
-			if (a_event->tag != "PIE" && a_event->tag != "CPR") {
+			if (!a_event || !a_event->holder) {
 				return;
 			}
-			RE::TESObjectREFR* holder = const_cast<RE::TESObjectREFR*>(a_event->holder);
 
-			if (!holder) {
-				return;
-			}
-			std::string payload = std::string(a_event->payload.data());
-			if (a_event->tag[0] == 'P') {
-				payloadManager::preProcess(holder->As<RE::Actor>(), &payload);
-			} else {
-				CPR::delegateNative(holder->As<RE::Actor>(), &payload);
-			}
+			std::string eventTag{ a_event->tag.c_str() };
 
+			PayloadHandlerManager* payloadHandlerManager = PayloadHandlerManager::GetSingleton();
+
+			PayloadHandler* handler = payloadHandlerManager->GetPayloadHandlerFor(eventTag);
+			if (handler) {
+				auto eventHolder = const_cast<RE::TESObjectREFR*>(a_event->holder);
+
+				if (eventHolder)
+				{
+					auto animationGraph = static_cast<RE::BShkbAnimationGraph*>(a_eventSource);
+					handler->Process(eventHolder, a_event->payload, animationGraph);
+				}
+			}
 		}
 		using EventResult = RE::BSEventNotifyControl;
 		static EventResult ProcessEvent_NPC(RE::BSTEventSink<RE::BSAnimationGraphEvent>* a_sink, RE::BSAnimationGraphEvent* a_event, RE::BSTEventSource<RE::BSAnimationGraphEvent>* a_eventSource) 
 		{
-			ProcessEvent(a_sink, a_event, a_eventSource);
+			ProcessEvent(a_event, a_eventSource);
 			return _ProcessEvent_NPC(a_sink, a_event, a_eventSource);
 		}
 		static EventResult ProcessEvent_PC(RE::BSTEventSink<RE::BSAnimationGraphEvent>* a_sink, RE::BSAnimationGraphEvent* a_event, RE::BSTEventSource<RE::BSAnimationGraphEvent>* a_eventSource) 
 		{
-			ProcessEvent(a_sink, a_event, a_eventSource);
+			ProcessEvent(a_event, a_eventSource);
 			return _ProcessEvent_PC(a_sink, a_event, a_eventSource);
 		}
 
