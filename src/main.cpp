@@ -1,6 +1,11 @@
 #include "events.h"
-#include "payloadManager.h"
 #include "hooks.h"
+
+#include "PayloadHandlerManager.h"
+#include "PayloadInterpreter.h"
+
+#include "CPR.h"
+
 void MessageHandler(SKSE::MessagingInterface::Message* a_msg)
 {
 	switch (a_msg->type) {
@@ -9,6 +14,15 @@ void MessageHandler(SKSE::MessagingInterface::Message* a_msg)
 		REL::Relocation<uintptr_t> npcPtr{ RELOCATION_ID(261399,207890) }; //165e3b0
 		REL::Relocation<uintptr_t> pcPtr{ RELOCATION_ID(261918,208044) }; //1663f78
 		Hooks::install();
+
+		auto payloadHandlerManager = PayloadHandlerManager::GetSingleton();
+
+		payloadHandlerManager->RegisterPayloadHandler("PIE", PayloadInterpreter::GetSingleton());
+		payloadHandlerManager->RegisterPayloadHandler("CPR", CPR::PayloadInterpreter::GetSingleton());
+
+		// Load payload handlers from mods registered for messages from Payload Interpreter
+		payloadHandlerManager->CollectExternPayloadHandlers();
+
 		break;
 	}
 }
@@ -16,7 +30,7 @@ void MessageHandler(SKSE::MessagingInterface::Message* a_msg)
 
 void onSKSEInit()
 {
-	payloadManager::loadPreDefinedPayload();
+	PayloadInterpreter::GetSingleton()->LoadPreDefinedPayloads();
 }
 
 namespace
