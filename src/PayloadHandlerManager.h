@@ -14,13 +14,15 @@ public:
 		return &singleton;
 	}
 
-	void RegisterPayloadHandler(std::string a_eventTag, PayloadHandler* a_payloadHandler) final
+	void RegisterPayloadHandler(const char* a_eventTag, PayloadHandler* a_payloadHandler) final
 	{
+		std::string eventTag{ a_eventTag };
+
 		// Convert to uppercase so it can be checked case insensitive
 		// (some animators are using "Pie" instead of "PIE" for the event tag)
-		for (char& c : a_eventTag) c = static_cast<char>(std::toupper(c));
+		for (char& c : eventTag) c = static_cast<char>(std::toupper(c));
 
-		handlers.emplace(a_eventTag, a_payloadHandler);
+		handlers.emplace(eventTag, a_payloadHandler);
 	}
 
 	void CollectExternPayloadHandlers()

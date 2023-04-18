@@ -20,7 +20,7 @@ namespace payloadinterpreter
 		class PayloadHandlerCollector
 		{
 		public:
-			virtual void RegisterPayloadHandler(std::string a_eventTag, PayloadHandler* a_payloadHandler) = 0;
+			virtual void RegisterPayloadHandler(const char* a_eventTag, PayloadHandler* a_payloadHandler) = 0;
 		};
 
 		struct Message
